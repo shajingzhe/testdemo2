@@ -4,5 +4,6 @@ public class gitTest {
         String a="1";
         String m="";
         String o="";
+        String n="123";
     }
 }
