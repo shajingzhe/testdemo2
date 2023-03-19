@@ -37,6 +37,7 @@ public class ThreadTest {
         System.out.println(a);
         int b = (int) 1.6;
         System.out.println(b);
+
     }
 
     private static void test1() {
