@@ -5,7 +5,7 @@ import java.time.Instant;
 public class getIP {
     public static void main(String[] args) throws UnknownHostException {
         int a =2;
-        String m="24";
+        String m="241";
         System.out.println(InetAddress.getLocalHost());
     }
 }
