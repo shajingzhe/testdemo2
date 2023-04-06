@@ -1,19 +1,10 @@
 import java.io.*;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.pdf.PdfWriter;
-import com.itextpdf.tool.xml.XMLWorkerFontProvider;
-import com.itextpdf.tool.xml.XMLWorkerHelper;
-import com.sun.org.apache.xalan.internal.xsltc.compiler.Template;
 import org.xhtmlrenderer.pdf.ITextFontResolver;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import com.lowagie.text.pdf.BaseFont;
 
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * 转换html为pdf
