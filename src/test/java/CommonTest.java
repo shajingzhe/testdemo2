@@ -1,14 +1,120 @@
+
+
+import cn.hutool.core.lang.Pair;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public class CommonTest {
-    public static void main(String[] args) {
-        String a = "73a0203a-a056-4788-b131-38cb2c8e5688";
-        System.out.println("a:" + a.length());
-        String b = "aba7bfc09f66473ca542f9b23a2bbab9";
-        System.out.println("b:" + b.length());
-        double a1 = 50000.0;
-        if (a1 == 5.0*10000) {
-            System.out.println("true");
-        } else {
-            System.out.println("false");
-        }
-    }
+	public static void main(String[] args) {
+		test5();
+
+	}
+
+	private static void test7() {
+//		Hashtable hashMap=new Hashtable();
+//		hashMap.put("qwe",null);
+//		System.out.println(hashMap);
+		List<Pair<String, Double>> pairArrayList = new ArrayList<>(2);
+		pairArrayList.add(new Pair<>("version1", 4.22));
+		pairArrayList.add(new Pair<>("version2", null));
+		Map<String, Double> map = pairArrayList.stream().collect(
+// 抛出 NullPointerException 异常
+				Collectors.toMap(Pair::getKey, Pair::getValue, (v1, v2) -> v2));
+		System.out.println(map);
+	}
+
+	private static void test6() {
+		String[] departments = new String[]{"iERP", "iERP", "EIBU"};
+// 抛出 IllegalStateException 异常
+		Map<Integer, String> map = Arrays.stream(departments)
+				.collect(Collectors.toMap(String::hashCode, str -> str));
+		System.out.println(map);
+	}
+
+	private static void test5() {
+		List<Pair<String, Double>> pairArrayList = new ArrayList<>(3);
+		pairArrayList.add(new Pair<>("version", 6.19));
+		pairArrayList.add(new Pair<>("version", 10.24));
+		pairArrayList.add(new Pair<>("version", 13.14));
+		pairArrayList.add(new Pair<>("version1", 13.14));
+		pairArrayList.add(new Pair<>("version2", 13.14));
+		Map<String, Double> map = pairArrayList.stream().collect(
+// 生成的 map 集合中只有一个键值对：{version=13.14}
+				Collectors.toMap(Pair::getKey, Pair::getValue, (v1, v2) -> v2));
+		System.out.println(map);
+	}
+
+	private static Date dataRemoveMinuteSecond(Date oldDate) {
+		if (oldDate == null) {
+			return null;
+		}
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date newData = null;
+		try {
+			newData = sdf.parse(sdf.format(oldDate));
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+		return newData;
+	}
+
+	private static void test4() {
+		Calendar cal1 = Calendar.getInstance();
+		Calendar cal2 = Calendar.getInstance();
+		if (cal1 == cal2) {
+			System.out.println("t");
+		} else {
+			System.out.println("f");
+		}
+	}
+
+	private static void test3() {
+		double a = 17 + 40 + 20 + 44 + 32 + 25 + 30;
+		System.out.println(a);
+		a = a * 1.5;
+		System.out.println(a);
+	}
+
+	private static void test2() {
+		StringBuilder stringBuilder = new StringBuilder();
+		stringBuilder.append("1").append("2");
+		String o = new StringBuilder().append("1").append("2").toString();
+		String a = "1" + new StringBuilder().append("2");
+		String b = "12";
+		String m = stringBuilder.toString();
+		if (a == b) {
+			System.out.println("相同");
+		} else {
+			System.out.println("不相同");
+		}
+		System.out.println(m);
+		System.out.println("================");
+		stringBuilder.append("3").append("4");
+		String n = stringBuilder.toString();
+		System.out.println(n);
+	}
+
+	private static void test1() {
+		String a = "73a0203a-a056-4788-b131-38cb2c8e5688";
+		System.out.println("a:" + a.length());
+		String b = "aba7bfc09f66473ca542f9b23a2bbab9";
+		System.out.println("b:" + b.length());
+		double a1 = 50000.0;
+		if (a1 == 5.0 * 10000) {
+			System.out.println("true");
+		} else {
+			System.out.println("false");
+		}
+	}
 }
