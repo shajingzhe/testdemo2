@@ -12,11 +12,20 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class CommonTest {
 	public static void main(String[] args) {
-		test5();
+		List<String> list = new ArrayList<>(2);
+		list.add("guan");
+		list.add("bao");
+		String[] array = list.toArray(new String[0]);
+		HashMap<String, String> hashMap = new HashMap<>();
+		Set<Map.Entry<String, String>> entries = hashMap.entrySet();
+		Set<String> strings = hashMap.keySet();
+
 
 	}
 
@@ -27,9 +36,9 @@ public class CommonTest {
 		List<Pair<String, Double>> pairArrayList = new ArrayList<>(2);
 		pairArrayList.add(new Pair<>("version1", 4.22));
 		pairArrayList.add(new Pair<>("version2", null));
-		Map<String, Double> map = pairArrayList.stream().collect(
+		Map<String, String> map = pairArrayList.stream().collect(
 // 抛出 NullPointerException 异常
-				Collectors.toMap(Pair::getKey, Pair::getValue, (v1, v2) -> v2));
+				Collectors.toMap(Pair::getKey, str -> str.getKey() != null ? str.getKey() : "", (v1, v2) -> v2));
 		System.out.println(map);
 	}
 
