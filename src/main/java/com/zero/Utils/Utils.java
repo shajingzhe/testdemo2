@@ -118,10 +118,10 @@ public class Utils {
 	 * 生成文件
 	 *
 	 * @param xfileInfo
-	 * @return
+	 * @return 文件地址
 	 * @throws IOException
 	 */
-	public static boolean uploadFile(XFileInfo xfileInfo) throws IOException {//todo s 需要考虑在catalog下另加一层小文件夹的情况，例如以日期为命名的文件夹
+	public static String uploadFile(XFileInfo xfileInfo) throws IOException {//todo s 需要考虑在catalog下另加一层小文件夹的情况，例如以日期为命名的文件夹
 		String ID = StrUtils.getSnowflakeId();
 
 		MultipartFile file = xfileInfo.getFile();
@@ -189,6 +189,6 @@ public class Utils {
 				throw new IOException(e.getMessage());
 			}
 		}
-		return true;
+		return destFile.getPath();
 	}
 }

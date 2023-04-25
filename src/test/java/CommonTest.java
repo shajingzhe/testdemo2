@@ -4,6 +4,7 @@ import com.zero.Exception.InfoException;
 import com.zero.Utils.StrUtils;
 import com.zero.Utils.Utils;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,13 +13,48 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class CommonTest {
-	public static void main(String[] args) {
-		test9();
 
+	public static void main(String[] args) {
+		String a ="asdADDsaS";
+		a=a.toLowerCase();
+		System.out.println(a);
+	}
+
+	private static void change(String str){
+		str="56";
+	}
+
+	public static boolean isChinese(String con) {
+		con=con.replaceAll(" ", "");
+		System.out.println(con);
+		for (int i = 0; i < con.length(); i = i + 1) {
+			if (!Pattern.compile("[\u4e00-\u9fa5]").matcher(
+					String.valueOf(con.charAt(i))).find()) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static void test10() {
+		Set<String> s1 = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+		s1.addAll(Arrays.asList(new String[] {"a", "b", "c"}));
+		boolean addSuccess=s1.add("A");
+		System.out.println(addSuccess);
+
+		Set<String> s2 = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
+		s2.addAll(Arrays.asList(new String[] {"A", "B", "C"}));
+
+		System.out.println(s1.equals(s2));
 	}
 
 	private static boolean checkIsSimilar(List<String> list, String name) {

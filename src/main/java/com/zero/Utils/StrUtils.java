@@ -8,6 +8,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class StrUtils {
 
@@ -223,6 +224,38 @@ public class StrUtils {
         Snowflake snowflake = IdUtil.getSnowflake(1, 1);
         long id = snowflake.nextId();
         return Long.toString(id);
+    }
+
+    /**
+     * 判断字符串是否为中文（去除空格）临时方法需要改进
+     * @param con
+     * @return
+     */
+    public static boolean isChinese(String con) {
+        con=con.replaceAll(" ", "").replaceAll("（", "").replaceAll("）", "");//todo s去除符号
+        for (int i = 0; i < con.length(); i = i + 1) {
+            if (!Pattern.compile("[\u4e00-\u9fa5]").matcher(
+                    String.valueOf(con.charAt(i))).find()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 判断字符串是否包含中文（去除空格）临时方法需要改进
+     * @param con
+     * @return
+     */
+    public static boolean containChinese(String con) {
+        con=con.replaceAll(" ", "").replaceAll("（", "").replaceAll("）", "");//todo s去除符号
+        for (int i = 0; i < con.length(); i = i + 1) {
+            if (Pattern.compile("[\u4e00-\u9fa5]").matcher(
+                    String.valueOf(con.charAt(i))).find()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 //	public static void main(String[] args) {
