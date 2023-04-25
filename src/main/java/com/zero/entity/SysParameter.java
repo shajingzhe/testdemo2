@@ -1,4 +1,4 @@
-package entity;
+package com.zero.entity;
 
 public class SysParameter {
     private String forPermission;

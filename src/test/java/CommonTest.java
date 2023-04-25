@@ -1,6 +1,9 @@
-
-
 import cn.hutool.core.lang.Pair;
+import cn.hutool.core.util.StrUtil;
+import com.zero.Exception.InfoException;
+import com.zero.Utils.StrUtils;
+import com.zero.Utils.Utils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,25 +11,52 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 public class CommonTest {
 	public static void main(String[] args) {
-		List<String> list = new ArrayList<>(2);
-		list.add("guan");
-		list.add("bao");
-		String[] array = list.toArray(new String[0]);
-		HashMap<String, String> hashMap = new HashMap<>();
-		Set<Map.Entry<String, String>> entries = hashMap.entrySet();
-		Set<String> strings = hashMap.keySet();
+		test9();
 
+	}
 
+	private static boolean checkIsSimilar(List<String> list, String name) {
+		if (name == null) {
+			return false;
+		}
+		try {
+			list.forEach(fieldName -> {
+				if (name.equalsIgnoreCase(fieldName)) {
+					throw new InfoException();
+				}
+			});
+		} catch (InfoException e) {
+			return true;
+		}
+		return false;
+	}
+
+	private static void test9() {
+		String a = "P_COMMUNITY_SCORE -> p_community_score";
+		String b = "P_COMMUNITY_SCORE";
+		String c = "id";
+		String b1 = StringUtils.removeStart(b, "P_");
+		String c1 = StringUtils.removeStart(c, "p_");
+		String b1_t = StrUtils.underlineTransferSmallHump(b1);
+		String c1_t = StrUtils.underlineTransferSmallHump(c1);
+		boolean equal = StrUtil.equalsAnyIgnoreCase(b1_t, c1_t);
+		System.out.println(equal);
+	}
+
+	private static void test8() {
+		String originalText;
+		try {
+			originalText = Utils.fileRead("/data/workplace/临时文件/工具文件夹/DFGF/1");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
 	}
 
 	private static void test7() {
@@ -57,10 +87,21 @@ public class CommonTest {
 		pairArrayList.add(new Pair<>("version", 13.14));
 		pairArrayList.add(new Pair<>("version1", 13.14));
 		pairArrayList.add(new Pair<>("version2", 13.14));
-		Map<String, Double> map = pairArrayList.stream().collect(
-// 生成的 map 集合中只有一个键值对：{version=13.14}
-				Collectors.toMap(Pair::getKey, Pair::getValue, (v1, v2) -> v2));
-		System.out.println(map);
+		System.out.println(pairArrayList.toString());
+//		int a = 1;
+//		for (int i = 0; i < pairArrayList.size(); ) {
+//			Pair<String, Double> pair = pairArrayList.get(i);
+//			if (a == 2) {
+//				pairArrayList.remove(1);
+//				continue;
+//			}
+//			i++;
+//			a++;
+//		}
+//		Map<String, Double> map = pairArrayList.stream().collect(
+//// 生成的 map 集合中只有一个键值对：{version=13.14}
+//				Collectors.toMap(Pair::getKey, Pair::getValue, (v1, v2) -> v2));
+//		System.out.println(map);
 	}
 
 	private static Date dataRemoveMinuteSecond(Date oldDate) {

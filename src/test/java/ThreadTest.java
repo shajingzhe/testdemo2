@@ -1,8 +1,6 @@
-import entity.XFileInfo;
+import com.zero.entity.XFileInfo;
 
 import java.lang.management.ManagementFactory;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 

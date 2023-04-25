@@ -1,4 +1,4 @@
-package entity;
+package com.zero.entity;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;

@@ -1,8 +1,9 @@
-package common;
+package com.zero.common;
 
+import com.zero.Utils.Utils;
 import cn.hutool.core.convert.Convert;
-import entity.SysParameter;
-import entity.XFileInfo;
+import com.zero.entity.XFileInfo;
+import com.zero.entity.SysParameter;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.springframework.mock.web.MockMultipartFile;
