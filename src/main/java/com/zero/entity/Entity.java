@@ -13,5 +13,5 @@ public class Entity {
 
 	private String displayName;
 
-	private String typle;
+	private String type;
 }

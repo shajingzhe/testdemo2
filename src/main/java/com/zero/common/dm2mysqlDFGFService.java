@@ -51,21 +51,21 @@ public class dm2mysqlDFGFService {
 
 		// 源数据处理
 		String[] o_split = StringUtils.split(o_dbText, "\n");
-		LinkedHashMap<String, Entity> o_transformInfoMap = transformDBTextSpitInfo2LinkedHashMap(o_split,"源数据");
+		LinkedHashMap<String, Entity> o_transformInfoMap = transformDBTextSpitInfo2LinkedHashMap(o_split, "源数据");
 		//o_split=null;
-		log.info("源数据字段数量: "+o_transformInfoMap.size());
+		log.info("源数据字段数量: " + o_transformInfoMap.size());
 
 		// 目标数据处理
 		String[] t_split = StringUtils.split(t_dbText, "\n");
-		LinkedHashMap<String, Entity> t_transformInfoMap = transformDBTextSpitInfo2LinkedHashMap(t_split,"目标数据");
+		LinkedHashMap<String, Entity> t_transformInfoMap = transformDBTextSpitInfo2LinkedHashMap(t_split, "目标数据");
 		//t_split=null;
-		log.info("目标数据字段数量: "+t_transformInfoMap.size());
+		log.info("目标数据字段数量: " + t_transformInfoMap.size());
 
 		// 映射文件处理
 		String[] m_split = StringUtils.split(m_mapText, "\n");
 		LinkedHashMap<String, String> m_transformInfoMap = transformMapTextSpitInfo2LinkedHashMap(errorInfoList, m_split);
 		//m_split=null;
-		log.info("映射数量: "+m_transformInfoMap.size());
+		log.info(" 非系统字段映射数量: " + m_transformInfoMap.size());
 
 
 		log.info("数据加载完成,数据初步检查通过");
@@ -80,7 +80,7 @@ public class dm2mysqlDFGFService {
 			}
 			e.setMappingStr(o_name + " -> " + t_name);
 
-			boolean findField = true;// 源与目标映射是否都找到对应的的字段(信号量)
+			int findField = 0;// 源与目标映射是否都找到对应的的字段(信号量01表示源与目标) 00：均未找到 01：找到目标字段 10：找到源字段 11：已找全
 
 			//源数据检查
 			Entity o_entity = new Entity();
@@ -88,9 +88,8 @@ public class dm2mysqlDFGFService {
 			if (findSuccess) {
 				e.setO_name(o_entity.getName());
 				e.setO_displayName(o_entity.getDisplayName());
-				e.setO_type(o_entity.getTyple());
-			} else {
-				findField = false;
+				e.setO_type(o_entity.getType());
+				findField = findField + 10;
 			}
 
 			//目标数据检查
@@ -99,26 +98,33 @@ public class dm2mysqlDFGFService {
 			if (findSuccess) {
 				e.setT_name(t_entity.getName());
 				e.setT_displayName(t_entity.getDisplayName());
-				e.setT_type(t_entity.getTyple());
-			} else {
-				findField = false;
+				e.setT_type(t_entity.getType());
+				findField = findField + 1;
 			}
 
-			if (!findField) {//未找全双方字段信息
-				e.setErrorInfo(errorInfoList_ls.toString());
+			if (findField != 11) {//未找全双方字段信息
+
+				//检查字段信息类型 （选项、枚举）
+				checkFieldInfoType_UnFindAll(e, errorInfoList_ls, findField, o_entity, t_entity);
+
+				e.setErrorInfo(String.join(",",errorInfoList_ls));
 				errorInfoList.add(e);
 				return;
 			}
 			if (!o_entity.getDisplayName().equals(t_entity.getDisplayName())) {
 				errorInfoList_ls.add("源字段名描述与目标字段描述不一致");
 			}
-			if (!o_entity.getTyple().equals(t_entity.getTyple())) {
+			if (!o_entity.getType().equals(t_entity.getType())) {
 				errorInfoList_ls.add("源字段名描述与目标字段类别不一致");
 			}
-			if (errorInfoList_ls.size() == 0) {
+
+			//检查字段信息类型 （选项、枚举）
+			checkFieldInfoType_FindAll(e, errorInfoList_ls, o_entity, t_entity);
+
+			if (errorInfoList_ls.size() == 0) {//没有错误信息则不输出
 				return;
 			}
-			e.setErrorInfo(errorInfoList_ls.toString());
+			e.setErrorInfo(String.join(",",errorInfoList_ls));
 			errorInfoList.add(e);
 		});
 		if (errorInfoList.size() == 0) {
@@ -129,6 +135,18 @@ public class dm2mysqlDFGFService {
 		}
 		log.info("数据对比完成，发现异常数据,正在数据文档");
 
+		//数据额外处理。
+		ExcelData_FOR_DM2MysqlDFGFService e1 = new ExcelData_FOR_DM2MysqlDFGFService();
+		e1.setO_name("源数据量");
+		e1.setO_displayName(StrUtil.toString(o_transformInfoMap.size()));
+		e1.setO_type("目标数据量");
+		e1.setT_name(StrUtil.toString(t_transformInfoMap.size()));
+		e1.setT_displayName("映射数据量");
+		e1.setT_type(StrUtil.toString(m_transformInfoMap.size() + 10));
+		e1.setMappingStr("最终映射数");
+		errorInfoList.add(e1);
+		errorInfoListAddNo(errorInfoList);
+
 		//region 文件处理
 		//xls处理
 		LinkedHashMap<String, String> aliasMap = new LinkedHashMap<>();
@@ -138,8 +156,12 @@ public class dm2mysqlDFGFService {
 		aliasMap.put("t_name", "目标数据名称");
 		aliasMap.put("t_displayName", "目标数据显示名");
 		aliasMap.put("t_type", "目标数据字段类型");
+		aliasMap.put("NO", "编号");
 		aliasMap.put("mappingStr", "映射");
 		aliasMap.put("errorInfo", "错误原因");
+		aliasMap.put("specialAction", "特殊动作");
+		aliasMap.put("o_type1", "源类别");
+		aliasMap.put("t_type1", "目标类别");
 		List<Object> objectList = new ArrayList<>();
 		objectList.addAll(errorInfoList);
 		String filePath = "";
@@ -161,6 +183,80 @@ public class dm2mysqlDFGFService {
 		return;
 		//endregion
 
+	}
+
+	/**
+	 * 当源与目标字段信息未找全时，检查类型是否为特殊类型（选项、枚举）
+	 *
+	 * @param e
+	 * @param errorInfoList_ls
+	 * @param findField
+	 * @param o_entity
+	 * @param t_entity
+	 */
+	private void checkFieldInfoType_UnFindAll(ExcelData_FOR_DM2MysqlDFGFService e, List<String> errorInfoList_ls, int findField,
+			Entity o_entity, Entity t_entity) {
+		if (findField == 10) {
+			String type = o_entity.getType();
+			if ("选项".equals(type) || "枚举".equals(type)) {
+				e.setO_type1(type);
+				e.setSpecialAction("非错误，需检查类别");
+				errorInfoList_ls.add(" ");
+			}
+		} else if (findField == 1) {
+			String type = t_entity.getType();
+			if ("选项".equals(type) || "枚举".equals(type)) {
+				e.setT_type1(type);
+				e.setSpecialAction("非错误，需检查类别");
+				errorInfoList_ls.add(" ");
+			}
+		} else if (findField == 0) {
+		} else {
+			throw new RuntimeException("信号量异常");
+		}
+	}
+
+	/**
+	 * 当源与目标字段信息找全时，检查类型是否为特殊类型（选项、枚举）
+	 *
+	 * @param e
+	 * @param errorInfoList_ls
+	 * @param o_entity
+	 * @param t_entity
+	 */
+	private void checkFieldInfoType_FindAll(ExcelData_FOR_DM2MysqlDFGFService e, List<String> errorInfoList_ls, Entity o_entity,
+			Entity t_entity) {
+		boolean findSpecialType = false;
+		String o_type = o_entity.getType();
+		if ("选项".equals(o_type) || "枚举".equals(o_type)) {
+			e.setO_type1(o_type);
+			findSpecialType = true;
+		}
+		String t_type = t_entity.getType();
+		if ("选项".equals(t_type) || "枚举".equals(t_type)) {
+			e.setT_type1(t_type);
+			findSpecialType = true;
+		}
+		if (o_type.equals(t_type)) {//如果类型名相同则目标类别在此处无需显示
+			e.setT_type1("");
+		}
+		if (findSpecialType) {
+			e.setSpecialAction("非错误，需检查类别");
+			errorInfoList_ls.add(" ");
+		}
+	}
+
+	/**
+	 * 增加编号
+	 *
+	 * @param errorInfoList
+	 */
+	private void errorInfoListAddNo(List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList) {
+		int i = 1;
+		for (ExcelData_FOR_DM2MysqlDFGFService e : errorInfoList) {
+			e.setNO(i);
+			i++;
+		}
 	}
 
 	/**
@@ -198,7 +294,7 @@ public class dm2mysqlDFGFService {
 				}
 				entity.setName(filedName);
 				entity.setDisplayName(filedEntity.getDisplayName());
-				entity.setTyple(filedEntity.getTyple());
+				entity.setType(filedEntity.getType());
 				throw new InfoException();
 			});
 		} catch (InfoException infoException) {
@@ -233,7 +329,7 @@ public class dm2mysqlDFGFService {
 	 * @param splitInfo
 	 * @return 字段名，字段信息（字段显示名，字段类型）
 	 */
-	private LinkedHashMap<String, Entity> transformDBTextSpitInfo2LinkedHashMap(String[] splitInfo,String sourceName) {
+	private LinkedHashMap<String, Entity> transformDBTextSpitInfo2LinkedHashMap(String[] splitInfo, String sourceName) {
 		LinkedHashMap<String, Entity> linkedHashMap = new LinkedHashMap<>();
 		String o_name = null;
 		for (int i = 0; i < splitInfo.length; ) {
@@ -242,18 +338,18 @@ public class dm2mysqlDFGFService {
 			for (int m = 1; m < 4; m++) {
 				if (m == 1) {
 					o_name = splitInfo[i].replaceAll(" ", "");//去除空格;
-					if(StrUtils.containChinese(o_name)){
-						throw new RuntimeException(sourceName+"排版异常:"+o_name+"["+o_name+"]"+"["+i+"]");
+					if (StrUtils.containChinese(o_name)) {
+						throw new RuntimeException(sourceName + "排版异常:" + o_name + "[" + o_name + "]" + "[" + i + "]");
 					}
 				} else if (m == 2) {
 					o_entity.setDisplayName(splitInfo[i]);
-					if(!StrUtils.containChinese(splitInfo[i])){
-						throw new RuntimeException(sourceName+"排版异常:"+o_name+"["+splitInfo[i]+"]"+"["+i+"]");
+					if (!StrUtils.containChinese(splitInfo[i])) {
+						throw new RuntimeException(sourceName + "排版异常:" + o_name + "[" + splitInfo[i] + "]" + "[" + i + "]");
 					}
 				} else if (m == 3) {
-					o_entity.setTyple(splitInfo[i]);
-					if(!"UUID".equalsIgnoreCase(splitInfo[i])&&!StrUtils.containChinese(splitInfo[i])){
-						throw new RuntimeException(sourceName+"排版异常:"+o_name+"["+splitInfo[i]+"]"+"["+i+"]");
+					o_entity.setType(splitInfo[i]);
+					if (!"UUID".equalsIgnoreCase(splitInfo[i]) && !StrUtils.containChinese(splitInfo[i])) {
+						throw new RuntimeException(sourceName + "排版异常:" + o_name + "[" + splitInfo[i] + "]" + "[" + i + "]");
 					}
 				} else {
 					throw new RuntimeException("异常数据");
@@ -322,6 +418,9 @@ public class dm2mysqlDFGFService {
 			linkedHashMap.put(o_name, t_name);
 		}
 		log.info("系统字段合计数量：" + systemFieldNum + " ; " + (systemFieldNum == 10));
+		if (systemFieldNum != 10) {
+			throw new RuntimeException("系统字段映射异常");
+		}
 		return linkedHashMap;
 	}
 }

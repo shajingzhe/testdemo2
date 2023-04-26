@@ -17,5 +17,9 @@ public class ExcelData_FOR_DM2MysqlDFGFService {
 	private String t_type;
 	private String mappingStr;
 	private String errorInfo;
+	private String o_type1;
+	private String t_type1;
+	private String specialAction;
+	private int NO;
 
 }
