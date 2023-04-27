@@ -36,7 +36,7 @@ public class dm2mysqlDFGFService {
 		String o_dbText;//源数据文件内容
 		String t_dbText;//目标数据文件内容
 		String m_mapText;//映射数据文件内容
-		String tableName = "律师1";
+		String tableName = "司法鉴定人";
 		List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList = new ArrayList<>();//错误信息集合
 		String path = "/data/workplace/临时文件/工具文件夹/DFGF/" + tableName;
 		log.info("loading....");
@@ -107,15 +107,15 @@ public class dm2mysqlDFGFService {
 				//检查字段信息类型 （选项、枚举）
 				checkFieldInfoType_UnFindAll(e, errorInfoList_ls, findField, o_entity, t_entity);
 
-				e.setErrorInfo(String.join(",",errorInfoList_ls));
+				e.setErrorInfo(String.join(",", errorInfoList_ls));
 				errorInfoList.add(e);
 				return;
 			}
 			if (!o_entity.getDisplayName().equals(t_entity.getDisplayName())) {
-				errorInfoList_ls.add("源字段名描述与目标字段描述不一致");
+				errorInfoList_ls.add("源字段名描述与目标字段【描述】不一致");
 			}
 			if (!o_entity.getType().equals(t_entity.getType())) {
-				errorInfoList_ls.add("源字段名描述与目标字段类别不一致");
+				errorInfoList_ls.add("源字段名描述与目标字段【类别】不一致");
 			}
 
 			//检查字段信息类型 （选项、枚举）
@@ -124,7 +124,7 @@ public class dm2mysqlDFGFService {
 			if (errorInfoList_ls.size() == 0) {//没有错误信息则不输出
 				return;
 			}
-			e.setErrorInfo(String.join(",",errorInfoList_ls));
+			e.setErrorInfo(String.join(",", errorInfoList_ls));
 			errorInfoList.add(e);
 		});
 		if (errorInfoList.size() == 0) {
@@ -347,7 +347,8 @@ public class dm2mysqlDFGFService {
 						throw new RuntimeException(sourceName + "排版异常:" + o_name + "[" + splitInfo[i] + "]" + "[" + i + "]");
 					}
 				} else if (m == 3) {
-					o_entity.setType(splitInfo[i]);
+					String type = transformTypeName(splitInfo[i]);
+					o_entity.setType(type);
 					if (!"UUID".equalsIgnoreCase(splitInfo[i]) && !StrUtils.containChinese(splitInfo[i])) {
 						throw new RuntimeException(sourceName + "排版异常:" + o_name + "[" + splitInfo[i] + "]" + "[" + i + "]");
 					}
@@ -362,6 +363,23 @@ public class dm2mysqlDFGFService {
 			linkedHashMap.put(o_name, o_entity);
 		}
 		return linkedHashMap;
+	}
+
+	private String transformTypeName(String oldTypeName) {
+		String newTypeName;
+		switch (oldTypeName) {
+			case "手机号":
+			case "身份证号":
+				newTypeName = "字符";
+				break;
+			case "序列号":
+				newTypeName = "整型";
+				break;
+			default:
+				newTypeName = oldTypeName;
+				break;
+		}
+		return newTypeName;
 	}
 
 	/**

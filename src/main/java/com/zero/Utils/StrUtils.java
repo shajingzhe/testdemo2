@@ -248,7 +248,9 @@ public class StrUtils {
      * @return
      */
     public static boolean containChinese(String con) {
-        con=con.replaceAll(" ", "").replaceAll("（", "").replaceAll("）", "");//todo s去除符号
+        con=con.replaceAll(" ", "")
+                .replaceAll("（", "").replaceAll("）", "")
+                .replaceAll("\\[", "").replaceAll("]", "");//todo s去除符号
         for (int i = 0; i < con.length(); i = i + 1) {
             if (Pattern.compile("[\u4e00-\u9fa5]").matcher(
                     String.valueOf(con.charAt(i))).find()) {
