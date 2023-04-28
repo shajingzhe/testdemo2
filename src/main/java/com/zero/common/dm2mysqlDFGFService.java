@@ -36,7 +36,7 @@ public class dm2mysqlDFGFService {
 		String o_dbText;//源数据文件内容
 		String t_dbText;//目标数据文件内容
 		String m_mapText;//映射数据文件内容
-		String tableName = "司法鉴定人";
+		String tableName = "司法鉴定所";
 		List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList = new ArrayList<>();//错误信息集合
 		String path = "/data/workplace/临时文件/工具文件夹/DFGF/" + tableName;
 		log.info("loading....");
@@ -343,7 +343,7 @@ public class dm2mysqlDFGFService {
 					}
 				} else if (m == 2) {
 					o_entity.setDisplayName(splitInfo[i]);
-					if (!StrUtils.containChinese(splitInfo[i])) {
+					if (!"logo".equalsIgnoreCase(splitInfo[i]) && !StrUtils.containChinese(splitInfo[i])) {
 						throw new RuntimeException(sourceName + "排版异常:" + o_name + "[" + splitInfo[i] + "]" + "[" + i + "]");
 					}
 				} else if (m == 3) {
@@ -370,6 +370,7 @@ public class dm2mysqlDFGFService {
 		switch (oldTypeName) {
 			case "手机号":
 			case "身份证号":
+			case "地区":
 				newTypeName = "字符";
 				break;
 			case "序列号":
