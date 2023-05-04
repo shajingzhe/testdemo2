@@ -1,7 +1,7 @@
 package com.zero.modal;
 
 import com.zero.Interface.DemoIni;
-import com.zero.Utils.Utils;
+import com.zero.Utils.FileUtils;
 import com.zero.entity.Entity;
 import com.zero.entity.ExcelData_FOR_DM2MysqlDFGFService;
 import com.zero.entity.XFileInfo;
@@ -47,9 +47,9 @@ public abstract class DemoService implements DemoIni{
 		String path = folderPath + tableName;
 		log.info("loading....");
 		try {
-			o_dbText = Utils.fileRead(path + "/original");
-			t_dbText = Utils.fileRead(path + "/target");
-			m_mapText = Utils.fileRead(path + "/map");
+			o_dbText = FileUtils.fileRead(path + "/original");
+			t_dbText = FileUtils.fileRead(path + "/target");
+			m_mapText = FileUtils.fileRead(path + "/map");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
@@ -96,13 +96,13 @@ public abstract class DemoService implements DemoIni{
 		objectList.addAll(errorInfoList);
 		String filePath = "";
 		try {
-			byte[] fileBytes = Utils.creatXls(objectList, aliasMap);
+			byte[] fileBytes = FileUtils.creatXls(objectList, aliasMap);
 			String fileName = "[" + tableName + "]数据迁移数据对比文档.xls";
 			XFileInfo xfileInfo = new XFileInfo("系统工具生成文件");
 			MultipartFile file = new MockMultipartFile(fileName, fileBytes);
 			xfileInfo.setFileName(fileName);
 			xfileInfo.setFile(file);
-			filePath = Utils.uploadFile(xfileInfo);
+			filePath = FileUtils.uploadFile(xfileInfo,"/data/workplace/临时文件/工具文件夹/DFGF/doc");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;

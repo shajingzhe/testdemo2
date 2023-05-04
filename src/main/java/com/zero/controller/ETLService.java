@@ -1,6 +1,6 @@
 package com.zero.controller;
 
-import com.zero.Utils.Utils;
+import com.zero.Utils.FileUtils;
 import cn.hutool.core.convert.Convert;
 import com.zero.entity.XFileInfo;
 import com.zero.entity.SysParameter;
@@ -23,7 +23,7 @@ public class ETLService {
     public void parseSysParameterText() {
         String originalText;
         try {
-            originalText = Utils.fileRead("C:\\Users\\admin\\Desktop\\新建文本文档.txt");
+            originalText = FileUtils.fileRead("C:\\Users\\admin\\Desktop\\新建文本文档.txt");
         } catch (Exception e) {
             e.printStackTrace();
             return;
@@ -72,13 +72,13 @@ public class ETLService {
         objectList.addAll(sysParameterList);
 
         try {
-            byte[] fileBytes = Utils.creatXls(objectList, aliasMap);
+            byte[] fileBytes = FileUtils.creatXls(objectList, aliasMap);
             String fileName = "ET-List3参数文档.xls";
             XFileInfo xfileInfo = new XFileInfo("系统工具生成文件");
             MultipartFile file = new MockMultipartFile(fileName, fileBytes);
             xfileInfo.setFileName(fileName);
             xfileInfo.setFile(file);
-            Utils.uploadFile(xfileInfo);
+            FileUtils.uploadFile(xfileInfo,"/data/workplace/临时文件/工具文件夹/DFGF/doc");//如需使用，输出目标需修改
         } catch (Exception e) {
             e.printStackTrace();
             return;

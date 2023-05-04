@@ -15,7 +15,7 @@ import java.rmi.RemoteException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class Utils {
+public class FileUtils {
 
 	//文件输出位置
 	private static String rootPath = "/data/workplace/临时文件/工具文件夹/DFGF/doc"; //请勿以"/"结尾，指出文件夹所在位置即可
@@ -118,10 +118,11 @@ public class Utils {
 	 * 生成文件
 	 *
 	 * @param xfileInfo
+	 * @param rootPath //请勿以"/"结尾，指出文件夹所在位置即可
 	 * @return 文件地址
 	 * @throws IOException
 	 */
-	public static String uploadFile(XFileInfo xfileInfo) throws IOException {//todo s 需要考虑在catalog下另加一层小文件夹的情况，例如以日期为命名的文件夹
+	public static String uploadFile(XFileInfo xfileInfo, String rootPath) throws IOException {//todo s 需要考虑在catalog下另加一层小文件夹的情况，例如以日期为命名的文件夹
 		String ID = StrUtils.getSnowflakeId();
 
 		MultipartFile file = xfileInfo.getFile();

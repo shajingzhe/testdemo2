@@ -2,9 +2,8 @@ import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.StrUtil;
 import com.zero.Exception.InfoException;
 import com.zero.Utils.StrUtils;
-import com.zero.Utils.Utils;
+import com.zero.Utils.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.junit.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,10 +12,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -105,7 +102,7 @@ public class CommonTest {
 	private static void test8() {
 		String originalText;
 		try {
-			originalText = Utils.fileRead("/data/workplace/临时文件/工具文件夹/DFGF/1");
+			originalText = FileUtils.fileRead("/data/workplace/临时文件/工具文件夹/DFGF/1");
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;
