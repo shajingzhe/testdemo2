@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -23,17 +26,31 @@ import java.util.stream.Collectors;
 public class CommonTest {
 
 	public static void main(String[] args) {
-		String a ="asdADDsaS";
-		a=a.toLowerCase();
-		System.out.println(a);
+//		HashSet<String> hashSet=new HashSet<>();
+//		hashSet.add("123");
+//		String a ="asdADDsaS";
+//		a=a.toLowerCase();
+//		System.out.println(a);
+		Set<String> stringSet = new TreeSet<>();
+		stringSet.add("a");
+		stringSet.add("a");
+		HashMap<String, String> hashMap = new HashMap<>();
+		Iterator<Map.Entry<String, String>> iterator = hashMap.entrySet().iterator();
+		while (iterator.hasNext()) {
+			Map.Entry<String, String> next = iterator.next();
+			String key = next.getKey();
+			String value = next.getValue();
+			iterator.remove();
+		}
+		System.out.println(stringSet);
 	}
 
-	private static void change(String str){
-		str="56";
+	private static void change(String str) {
+		str = "56";
 	}
 
 	public static boolean isChinese(String con) {
-		con=con.replaceAll(" ", "");
+		con = con.replaceAll(" ", "");
 		System.out.println(con);
 		for (int i = 0; i < con.length(); i = i + 1) {
 			if (!Pattern.compile("[\u4e00-\u9fa5]").matcher(
@@ -47,12 +64,12 @@ public class CommonTest {
 
 	private static void test10() {
 		Set<String> s1 = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-		s1.addAll(Arrays.asList(new String[] {"a", "b", "c"}));
-		boolean addSuccess=s1.add("A");
+		s1.addAll(Arrays.asList(new String[]{"a", "b", "c"}));
+		boolean addSuccess = s1.add("A");
 		System.out.println(addSuccess);
 
 		Set<String> s2 = new TreeSet<String>(String.CASE_INSENSITIVE_ORDER);
-		s2.addAll(Arrays.asList(new String[] {"A", "B", "C"}));
+		s2.addAll(Arrays.asList(new String[]{"A", "B", "C"}));
 
 		System.out.println(s1.equals(s2));
 	}
