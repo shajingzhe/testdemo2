@@ -13,12 +13,13 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class service {
+public class ETLService {
 
     /**
      * 解析ET-List3参数文档
      */
     @Test
+    @SuppressWarnings("all")
     public void parseSysParameterText() {
         String originalText;
         try {
@@ -27,15 +28,15 @@ public class service {
             e.printStackTrace();
             return;
         }
-        String[] attributeTextArray = new String[10];
+        String[] attributeTextArray;
         String forPermission;
         String displayName;
         String parameterName;
-        String[] forPermissionArray = new String[1];
-        String[] displayNameArray = new String[1];
-        String[] parameterNameArrayString = new String[1];
-        String[] parameterNameArrayBool = new String[1];
-        String[] parameterNameArrayInt = new String[1];
+        String[] forPermissionArray;
+        String[] displayNameArray;
+        String[] parameterNameArrayString;
+        String[] parameterNameArrayBool;
+        String[] parameterNameArrayInt;
         List<SysParameter> sysParameterList = new ArrayList<>();
 
         attributeTextArray = StringUtils.substringsBetween(originalText, "[Exatell.Function", "set; }");
@@ -71,7 +72,7 @@ public class service {
         objectList.addAll(sysParameterList);
 
         try {
-            byte[] fileBytes = fileBytes = Utils.creatXls(objectList, aliasMap);
+            byte[] fileBytes = Utils.creatXls(objectList, aliasMap);
             String fileName = "ET-List3参数文档.xls";
             XFileInfo xfileInfo = new XFileInfo("系统工具生成文件");
             MultipartFile file = new MockMultipartFile(fileName, fileBytes);
@@ -83,7 +84,5 @@ public class service {
             return;
         }
         System.out.println("生成成功");
-        return;
-
     }
 }
