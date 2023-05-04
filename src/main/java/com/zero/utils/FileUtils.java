@@ -1,4 +1,4 @@
-package com.zero.Utils;
+package com.zero.utils;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.file.FileNameUtil;

@@ -1,11 +1,11 @@
 package com.zero.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.zero.Exception.InfoException;
-import com.zero.Utils.StrUtils;
-import com.zero.Utils.FileUtils;
+import com.zero.exception.InfoException;
+import com.zero.utils.StrUtils;
+import com.zero.utils.FileUtils;
 import com.zero.entity.Entity;
-import com.zero.entity.ExcelData_FOR_DM2MysqlDFGFService;
+import com.zero.entity.ExcelData4DataMigration;
 import com.zero.entity.XFileInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +37,7 @@ public class dm2mysqlDFGFService {
 		String t_dbText;//目标数据文件内容
 		String m_mapText;//映射数据文件内容
 		String tableName = "司法鉴定所";
-		List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList = new ArrayList<>();//错误信息集合
+		List<ExcelData4DataMigration> errorInfoList = new ArrayList<>();//错误信息集合
 		String path = "/data/workplace/临时文件/工具文件夹/DFGF/" + tableName;
 		log.info("loading....");
 		try {
@@ -72,7 +72,7 @@ public class dm2mysqlDFGFService {
 
 		//问题数据整合处理
 		m_transformInfoMap.forEach((o_name, t_name) -> {
-			ExcelData_FOR_DM2MysqlDFGFService e = new ExcelData_FOR_DM2MysqlDFGFService();
+			ExcelData4DataMigration e = new ExcelData4DataMigration();
 			//映射检查
 			List<String> errorInfoList_ls = new ArrayList<>();
 			if (!checkMapKVIsSimilar(o_name, t_name)) {
@@ -136,7 +136,7 @@ public class dm2mysqlDFGFService {
 		log.info("数据对比完成，发现异常数据,正在数据文档");
 
 		//数据额外处理。
-		ExcelData_FOR_DM2MysqlDFGFService e1 = new ExcelData_FOR_DM2MysqlDFGFService();
+		ExcelData4DataMigration e1 = new ExcelData4DataMigration();
 		e1.setO_name("源数据量");
 		e1.setO_displayName(StrUtil.toString(o_transformInfoMap.size()));
 		e1.setO_type("目标数据量");
@@ -194,7 +194,7 @@ public class dm2mysqlDFGFService {
 	 * @param o_entity
 	 * @param t_entity
 	 */
-	private void checkFieldInfoType_UnFindAll(ExcelData_FOR_DM2MysqlDFGFService e, List<String> errorInfoList_ls, int findField,
+	private void checkFieldInfoType_UnFindAll(ExcelData4DataMigration e, List<String> errorInfoList_ls, int findField,
 			Entity o_entity, Entity t_entity) {
 		if (findField == 10) {
 			String type = o_entity.getType();
@@ -224,7 +224,7 @@ public class dm2mysqlDFGFService {
 	 * @param o_entity
 	 * @param t_entity
 	 */
-	private void checkFieldInfoType_FindAll(ExcelData_FOR_DM2MysqlDFGFService e, List<String> errorInfoList_ls, Entity o_entity,
+	private void checkFieldInfoType_FindAll(ExcelData4DataMigration e, List<String> errorInfoList_ls, Entity o_entity,
 			Entity t_entity) {
 		boolean findSpecialType = false;
 		String o_type = o_entity.getType();
@@ -251,9 +251,9 @@ public class dm2mysqlDFGFService {
 	 *
 	 * @param errorInfoList
 	 */
-	private void errorInfoListAddNo(List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList) {
+	private void errorInfoListAddNo(List<ExcelData4DataMigration> errorInfoList) {
 		int i = 1;
-		for (ExcelData_FOR_DM2MysqlDFGFService e : errorInfoList) {
+		for (ExcelData4DataMigration e : errorInfoList) {
 			e.setNO(i);
 			i++;
 		}
@@ -389,7 +389,7 @@ public class dm2mysqlDFGFService {
 	 * @param splitInfo
 	 * @return 源字段名，目标字段名
 	 */
-	private LinkedHashMap<String, String> transformMapTextSpitInfo2LinkedHashMap(List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList,
+	private LinkedHashMap<String, String> transformMapTextSpitInfo2LinkedHashMap(List<ExcelData4DataMigration> errorInfoList,
 			String[] splitInfo) {
 		LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<>();
 		String o_name = null;
@@ -417,13 +417,13 @@ public class dm2mysqlDFGFService {
 				throw new RuntimeException("映射数据异常");
 			}
 			if (!o_nameSet.add(o_name.toLowerCase())) {
-				ExcelData_FOR_DM2MysqlDFGFService e = new ExcelData_FOR_DM2MysqlDFGFService();
+				ExcelData4DataMigration e = new ExcelData4DataMigration();
 				e.setMappingStr(o_name + " -> ");
 				e.setErrorInfo("源数据字段名重复");
 				errorInfoList.add(e);
 			}
 			if (!t_nameSet.add(t_name.toLowerCase())) {
-				ExcelData_FOR_DM2MysqlDFGFService e = new ExcelData_FOR_DM2MysqlDFGFService();
+				ExcelData4DataMigration e = new ExcelData4DataMigration();
 				e.setMappingStr(" -> " + t_name);
 				e.setErrorInfo("目标数据字段名重复");
 				errorInfoList.add(e);

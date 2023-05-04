@@ -1,7 +1,7 @@
 package com.zero.Interface;
 
 import com.zero.entity.Entity;
-import com.zero.entity.ExcelData_FOR_DM2MysqlDFGFService;
+import com.zero.entity.ExcelData4DataMigration;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,10 +17,10 @@ public interface DemoIni {
 	LinkedHashMap<String, Entity> transformDBTextSpitInfo2LinkedHashMap_T(String t_dbText);
 
 	LinkedHashMap<String, String> transformMapTextSpitInfo2LinkedHashMap_M(
-			List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList, String m_mapText);
+			List<ExcelData4DataMigration> errorInfoList, String m_mapText);
 
 
-	void dealData(List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList, LinkedHashMap<String, Entity> o_transformInfoMap,
+	void dealData(List<ExcelData4DataMigration> errorInfoList, LinkedHashMap<String, Entity> o_transformInfoMap,
 			LinkedHashMap<String, Entity> t_transformInfoMap, String o_name, String t_name);
 
 	/**
@@ -30,6 +30,6 @@ public interface DemoIni {
 	 * @param t_transformInfoMap
 	 * @param m_transformInfoMap
 	 */
-	void dealDataExtraAction(List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList, LinkedHashMap<String, Entity> o_transformInfoMap,
+	void dealDataExtraAction(List<ExcelData4DataMigration> errorInfoList, LinkedHashMap<String, Entity> o_transformInfoMap,
 			LinkedHashMap<String, Entity> t_transformInfoMap, LinkedHashMap<String, String> m_transformInfoMap);
 }

@@ -1,4 +1,4 @@
-package com.zero.Utils;
+package com.zero.utils;
 
 /**
  * @author shajingzhe

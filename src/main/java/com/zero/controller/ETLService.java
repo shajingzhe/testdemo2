@@ -1,6 +1,6 @@
 package com.zero.controller;
 
-import com.zero.Utils.FileUtils;
+import com.zero.utils.FileUtils;
 import cn.hutool.core.convert.Convert;
 import com.zero.entity.XFileInfo;
 import com.zero.entity.SysParameter;

@@ -1,10 +1,9 @@
 package com.zero.modal;
 
-import cn.hutool.core.util.StrUtil;
 import com.zero.Interface.DemoIni;
-import com.zero.Utils.FileUtils;
+import com.zero.utils.FileUtils;
 import com.zero.entity.Entity;
-import com.zero.entity.ExcelData_FOR_DM2MysqlDFGFService;
+import com.zero.entity.ExcelData4DataMigration;
 import com.zero.entity.XFileInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -22,7 +21,7 @@ import java.util.List;
 @Slf4j
 public abstract class DemoService implements DemoIni {
 
-	//原文件地址
+	//原数据文件地址
 	private String folderPath;
 
 	//输出xls标题
@@ -49,7 +48,7 @@ public abstract class DemoService implements DemoIni {
 		String t_dbText;//目标数据文件内容
 		String m_mapText;//映射数据文件内容
 
-		List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList = new ArrayList<>();//错误信息集合
+		List<ExcelData4DataMigration> errorInfoList = new ArrayList<>();//错误信息集合
 		folderPath = FileUtils.removeEndSymbol(folderPath);
 		String path = folderPath + "/" + tableName;
 		log.info("loading....");

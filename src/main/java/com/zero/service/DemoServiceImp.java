@@ -1,10 +1,10 @@
 package com.zero.service;
 
 import cn.hutool.core.util.StrUtil;
-import com.zero.Exception.InfoException;
-import com.zero.Utils.StrUtils;
+import com.zero.exception.InfoException;
+import com.zero.utils.StrUtils;
 import com.zero.entity.Entity;
-import com.zero.entity.ExcelData_FOR_DM2MysqlDFGFService;
+import com.zero.entity.ExcelData4DataMigration;
 import com.zero.modal.DemoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -129,7 +129,7 @@ public class DemoServiceImp extends DemoService {
 	}
 
 	@Override
-	public LinkedHashMap<String, String> transformMapTextSpitInfo2LinkedHashMap_M(List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList,
+	public LinkedHashMap<String, String> transformMapTextSpitInfo2LinkedHashMap_M(List<ExcelData4DataMigration> errorInfoList,
 			String m_mapText) {
 		String[] splitInfo = StringUtils.split(m_mapText, "\n");
 		LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<>();
@@ -158,13 +158,13 @@ public class DemoServiceImp extends DemoService {
 				throw new RuntimeException("映射数据异常");
 			}
 			if (!o_nameSet.add(o_name.toLowerCase())) {
-				ExcelData_FOR_DM2MysqlDFGFService e = new ExcelData_FOR_DM2MysqlDFGFService();
+				ExcelData4DataMigration e = new ExcelData4DataMigration();
 				e.setMappingStr(o_name + " -> ");
 				e.setErrorInfo("源数据字段名重复");
 				errorInfoList.add(e);
 			}
 			if (!t_nameSet.add(t_name.toLowerCase())) {
-				ExcelData_FOR_DM2MysqlDFGFService e = new ExcelData_FOR_DM2MysqlDFGFService();
+				ExcelData4DataMigration e = new ExcelData4DataMigration();
 				e.setMappingStr(" -> " + t_name);
 				e.setErrorInfo("目标数据字段名重复");
 				errorInfoList.add(e);
@@ -185,9 +185,9 @@ public class DemoServiceImp extends DemoService {
 	}
 
 	@Override
-	public void dealData(List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList, LinkedHashMap<String, Entity> o_transformInfoMap,
+	public void dealData(List<ExcelData4DataMigration> errorInfoList, LinkedHashMap<String, Entity> o_transformInfoMap,
 			LinkedHashMap<String, Entity> t_transformInfoMap, String o_name, String t_name) {
-		ExcelData_FOR_DM2MysqlDFGFService e = new ExcelData_FOR_DM2MysqlDFGFService();
+		ExcelData4DataMigration e = new ExcelData4DataMigration();
 		//映射检查
 		List<String> errorInfoList_ls = new ArrayList<>();
 		if (!checkMapKVIsSimilar(o_name, t_name)) {
@@ -244,10 +244,10 @@ public class DemoServiceImp extends DemoService {
 	}
 
 	@Override
-	public void dealDataExtraAction(List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList, LinkedHashMap<String, Entity> o_transformInfoMap,
+	public void dealDataExtraAction(List<ExcelData4DataMigration> errorInfoList, LinkedHashMap<String, Entity> o_transformInfoMap,
 			LinkedHashMap<String, Entity> t_transformInfoMap, LinkedHashMap<String, String> m_transformInfoMap) {
 		//数据额外处理。
-		ExcelData_FOR_DM2MysqlDFGFService e1 = new ExcelData_FOR_DM2MysqlDFGFService();
+		ExcelData4DataMigration e1 = new ExcelData4DataMigration();
 		e1.setO_name("源数据量");
 		e1.setO_displayName(StrUtil.toString(o_transformInfoMap.size()));
 		e1.setO_type("目标数据量");
@@ -350,7 +350,7 @@ public class DemoServiceImp extends DemoService {
 	 * @param o_entity
 	 * @param t_entity
 	 */
-	private void checkFieldInfoType_UnFindAll(ExcelData_FOR_DM2MysqlDFGFService e, List<String> errorInfoList_ls, int findField,
+	private void checkFieldInfoType_UnFindAll(ExcelData4DataMigration e, List<String> errorInfoList_ls, int findField,
 			Entity o_entity, Entity t_entity) {
 		if (findField == 10) {
 			String type = o_entity.getType();
@@ -380,7 +380,7 @@ public class DemoServiceImp extends DemoService {
 	 * @param o_entity
 	 * @param t_entity
 	 */
-	private void checkFieldInfoType_FindAll(ExcelData_FOR_DM2MysqlDFGFService e, List<String> errorInfoList_ls, Entity o_entity,
+	private void checkFieldInfoType_FindAll(ExcelData4DataMigration e, List<String> errorInfoList_ls, Entity o_entity,
 			Entity t_entity) {
 		boolean findSpecialType = false;
 		String o_type = o_entity.getType();
@@ -407,9 +407,9 @@ public class DemoServiceImp extends DemoService {
 	 *
 	 * @param errorInfoList
 	 */
-	private void errorInfoListAddNo(List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList) {
+	private void errorInfoListAddNo(List<ExcelData4DataMigration> errorInfoList) {
 		int i = 1;
-		for (ExcelData_FOR_DM2MysqlDFGFService e : errorInfoList) {
+		for (ExcelData4DataMigration e : errorInfoList) {
 			e.setNO(i);
 			i++;
 		}

@@ -7,7 +7,7 @@ import lombok.Data;
  * @date 2023/4/23 下午5:35
  */
 @Data
-public class ExcelData_FOR_DM2MysqlDFGFService {
+public class ExcelData4DataMigration {
 
 	private String o_name;
 	private String o_displayName;

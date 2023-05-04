@@ -1,4 +1,4 @@
-package com.zero.Exception;
+package com.zero.exception;
 
 /**
  * @author shajingzhe

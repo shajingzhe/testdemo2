@@ -1,4 +1,4 @@
-package com.zero.Utils;
+package com.zero.utils;
 
 import cn.hutool.core.lang.Snowflake;
 import cn.hutool.core.util.IdUtil;
