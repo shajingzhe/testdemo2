@@ -1,4 +1,4 @@
-package com.zero.common;
+package com.zero.controller;
 
 import cn.hutool.core.util.StrUtil;
 import com.zero.Exception.InfoException;

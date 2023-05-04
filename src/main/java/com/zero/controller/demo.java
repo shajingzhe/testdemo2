@@ -1,4 +1,7 @@
-package com.zero.common;
+package com.zero.controller;
+
+import com.zero.modal.DemoService;
+import com.zero.service.DemoServiceImp;
 
 /**
  * @author shajingzhe
@@ -11,6 +14,4 @@ public class demo {
 		demoService.parseSysParameterText("司法鉴定所");
 	}
 
-	public void acr(){
-	}
 }

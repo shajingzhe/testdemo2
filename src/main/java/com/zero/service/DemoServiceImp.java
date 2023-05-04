@@ -1,10 +1,11 @@
-package com.zero.common;
+package com.zero.service;
 
 import cn.hutool.core.util.StrUtil;
 import com.zero.Exception.InfoException;
 import com.zero.Utils.StrUtils;
 import com.zero.entity.Entity;
 import com.zero.entity.ExcelData_FOR_DM2MysqlDFGFService;
+import com.zero.modal.DemoService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class DemoServiceImp extends DemoService {
 		folderPath = "/data/workplace/临时文件/工具文件夹/DFGF/";
 	}
 
-	DemoServiceImp() {
+	public DemoServiceImp() {
 		super(folderPath, aliasMap);
 	}
 

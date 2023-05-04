@@ -1,4 +1,4 @@
-package com.zero.common;
+package com.zero.modal;
 
 import com.zero.Interface.DemoIni;
 import com.zero.Utils.Utils;
@@ -26,7 +26,7 @@ public abstract class DemoService implements DemoIni{
 
 	private LinkedHashMap<String, String> aliasMap;
 
-	DemoService(String folderPath,LinkedHashMap<String, String> aliasMap){
+	protected DemoService(String folderPath, LinkedHashMap<String, String> aliasMap){
 		this.folderPath=folderPath;
 		this.aliasMap=aliasMap;
 	}
