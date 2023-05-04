@@ -7,6 +7,7 @@ import com.zero.entity.Entity;
 import com.zero.entity.ExcelData_FOR_DM2MysqlDFGFService;
 import com.zero.modal.DemoService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,6 +25,8 @@ public class DemoServiceImp extends DemoService {
 
 	private static String folderPath;
 
+	private static String rootPath_downFile;
+
 	static {
 		aliasMap.put("o_name", "源数据名称");
 		aliasMap.put("o_displayName", "源数据显示名");
@@ -37,17 +40,20 @@ public class DemoServiceImp extends DemoService {
 		aliasMap.put("specialAction", "特殊动作");
 		aliasMap.put("o_type1", "源类别");
 		aliasMap.put("t_type1", "目标类别");
-		folderPath = "/data/workplace/临时文件/工具文件夹/DFGF/";
+		folderPath = "/data/workplace/临时文件/工具文件夹/DFGF";
+		rootPath_downFile = "/data/workplace/临时文件/工具文件夹/DFGF/doc";
+
 	}
 
 	public DemoServiceImp() {
-		super(folderPath, aliasMap);
+		super(folderPath, aliasMap, rootPath_downFile);
 	}
 
 
 	@Override
-	public LinkedHashMap<String, Entity> transformDBTextSpitInfo2LinkedHashMap_O(String[] splitInfo) {
+	public LinkedHashMap<String, Entity> transformDBTextSpitInfo2LinkedHashMap_O(String o_dbText) {
 		String sourceName = "源数据";
+		String[] splitInfo = StringUtils.split(o_dbText, "\n");
 		LinkedHashMap<String, Entity> linkedHashMap = new LinkedHashMap<>();
 		String o_name = null;
 		for (int i = 0; i < splitInfo.length; ) {
@@ -84,8 +90,9 @@ public class DemoServiceImp extends DemoService {
 	}
 
 	@Override
-	public LinkedHashMap<String, Entity> transformDBTextSpitInfo2LinkedHashMap_T(String[] splitInfo) {
+	public LinkedHashMap<String, Entity> transformDBTextSpitInfo2LinkedHashMap_T(String t_dbText) {
 		String sourceName = "目标数据";
+		String[] splitInfo = StringUtils.split(t_dbText, "\n");
 		LinkedHashMap<String, Entity> linkedHashMap = new LinkedHashMap<>();
 		String o_name = null;
 		for (int i = 0; i < splitInfo.length; ) {
@@ -123,7 +130,8 @@ public class DemoServiceImp extends DemoService {
 
 	@Override
 	public LinkedHashMap<String, String> transformMapTextSpitInfo2LinkedHashMap_M(List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList,
-			String[] splitInfo) {
+			String m_mapText) {
+		String[] splitInfo = StringUtils.split(m_mapText, "\n");
 		LinkedHashMap<String, String> linkedHashMap = new LinkedHashMap<>();
 		String o_name = null;
 		String t_name = null;

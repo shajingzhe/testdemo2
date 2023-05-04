@@ -1,12 +1,12 @@
 package com.zero.modal;
 
+import cn.hutool.core.util.StrUtil;
 import com.zero.Interface.DemoIni;
 import com.zero.Utils.FileUtils;
 import com.zero.entity.Entity;
 import com.zero.entity.ExcelData_FOR_DM2MysqlDFGFService;
 import com.zero.entity.XFileInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,15 +20,21 @@ import java.util.List;
  * @date 2023/5/4 上午11:36
  */
 @Slf4j
-public abstract class DemoService implements DemoIni{
+public abstract class DemoService implements DemoIni {
 
+	//原文件地址
 	private String folderPath;
 
+	//输出xls标题
 	private LinkedHashMap<String, String> aliasMap;
 
-	protected DemoService(String folderPath, LinkedHashMap<String, String> aliasMap){
-		this.folderPath=folderPath;
-		this.aliasMap=aliasMap;
+	//下载文件夹
+	private String rootPath_downFile;
+
+	protected DemoService(String folderPath, LinkedHashMap<String, String> aliasMap, String rootPath_downFile) {
+		this.folderPath = folderPath;
+		this.aliasMap = aliasMap;
+		this.rootPath_downFile = rootPath_downFile;
 	}
 
 	/**
@@ -44,7 +50,8 @@ public abstract class DemoService implements DemoIni{
 		String m_mapText;//映射数据文件内容
 
 		List<ExcelData_FOR_DM2MysqlDFGFService> errorInfoList = new ArrayList<>();//错误信息集合
-		String path = folderPath + tableName;
+		folderPath = FileUtils.removeEndSymbol(folderPath);
+		String path = folderPath + "/" + tableName;
 		log.info("loading....");
 		try {
 			o_dbText = FileUtils.fileRead(path + "/original");
@@ -56,20 +63,17 @@ public abstract class DemoService implements DemoIni{
 		}
 
 		// 源数据处理
-		String[] o_split = StringUtils.split(o_dbText, "\n");
-		LinkedHashMap<String, Entity> o_transformInfoMap = transformDBTextSpitInfo2LinkedHashMap_O(o_split );
+		LinkedHashMap<String, Entity> o_transformInfoMap = transformDBTextSpitInfo2LinkedHashMap_O(o_dbText);
 		//o_split=null;
 		log.info("源数据字段数量: " + o_transformInfoMap.size());
 
 		// 目标数据处理
-		String[] t_split = StringUtils.split(t_dbText, "\n");
-		LinkedHashMap<String, Entity> t_transformInfoMap = transformDBTextSpitInfo2LinkedHashMap_T(t_split);
+		LinkedHashMap<String, Entity> t_transformInfoMap = transformDBTextSpitInfo2LinkedHashMap_T(t_dbText);
 		//t_split=null;
 		log.info("目标数据字段数量: " + t_transformInfoMap.size());
 
 		// 映射文件处理
-		String[] m_split = StringUtils.split(m_mapText, "\n");
-		LinkedHashMap<String, String> m_transformInfoMap = transformMapTextSpitInfo2LinkedHashMap_M(errorInfoList, m_split);
+		LinkedHashMap<String, String> m_transformInfoMap = transformMapTextSpitInfo2LinkedHashMap_M(errorInfoList, m_mapText);
 		//m_split=null;
 		log.info(" 非系统字段映射数量: " + m_transformInfoMap.size());
 
@@ -102,7 +106,7 @@ public abstract class DemoService implements DemoIni{
 			MultipartFile file = new MockMultipartFile(fileName, fileBytes);
 			xfileInfo.setFileName(fileName);
 			xfileInfo.setFile(file);
-			filePath = FileUtils.uploadFile(xfileInfo,"/data/workplace/临时文件/工具文件夹/DFGF/doc");
+			filePath = FileUtils.uploadFile(xfileInfo, rootPath_downFile);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return;

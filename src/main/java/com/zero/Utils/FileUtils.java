@@ -118,7 +118,7 @@ public class FileUtils {
 	 * 生成文件
 	 *
 	 * @param xfileInfo
-	 * @param rootPath //请勿以"/"结尾，指出文件夹所在位置即可
+	 * @param rootPath  //请勿以"/"结尾，指出文件夹所在位置即可
 	 * @return 文件地址
 	 * @throws IOException
 	 */
@@ -191,5 +191,15 @@ public class FileUtils {
 			}
 		}
 		return destFile.getPath();
+	}
+
+	/**
+	 * 去除地址的结尾“/”符号
+	 *
+	 * @param addressPath
+	 * @return
+	 */
+	public static String removeEndSymbol(String addressPath) {
+		return StrUtil.endWith(addressPath, "/") ? StrUtil.split(addressPath, addressPath.length() - 1)[0] : addressPath;
 	}
 }
