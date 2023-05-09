@@ -1,5 +1,6 @@
 import cn.hutool.core.lang.Pair;
 import cn.hutool.core.util.StrUtil;
+import com.google.common.collect.Lists;
 import com.zero.exception.InfoException;
 import com.zero.utils.StrUtils;
 import com.zero.utils.FileUtils;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -23,24 +25,45 @@ import java.util.stream.Collectors;
 public class CommonTest {
 
 	public static void main(String[] args) {
-//		HashSet<String> hashSet=new HashSet<>();
-//		hashSet.add("123");
-//		String a ="asdADDsaS";
-//		a=a.toLowerCase();
-//		System.out.println(a);
-		Set<String> stringSet = new TreeSet<>();
-		stringSet.add("a");
-		stringSet.add("a");
-		HashMap<String, String> hashMap = new HashMap<>();
-		Iterator<Map.Entry<String, String>> iterator = hashMap.entrySet().iterator();
-		while (iterator.hasNext()) {
-			Map.Entry<String, String> next = iterator.next();
-			String key = next.getKey();
-			String value = next.getValue();
-			iterator.remove();
-		}
-		System.out.println(stringSet);
+		testTrim();
+
 	}
+
+	private static void testTrim() {
+		String str = "   hello world。 ";
+		str = str.trim(); // 去掉前面的空格
+		System.out.println(str);
+	}
+
+	private static void test12() {
+		Integer a = 1;
+		Integer b = 2;
+		Integer c = null;
+		Boolean flag = false;
+// a*b 的结果是 int 类型，那么 c 会强制拆箱成 int 类型，抛出 NPE 异常
+		Integer result=(flag? a*b : c);//todo s 存在疑问放进去时，参数的类型是看变量的类型还是对象的类型
+	}
+
+	public static void test11() {
+		method(null);
+	}
+
+	public static void method(String param) {
+		switch (param) {
+// 肯定不是进入这里
+			case "sth":
+				System.out.println("it's sth");
+				break;
+// 也不是进入这里
+			case "null":
+				System.out.println("it's null");
+				break;
+// 也不是进入这里
+			default:
+				System.out.println("default");
+		}
+	}
+
 
 	private static void change(String str) {
 		str = "56";

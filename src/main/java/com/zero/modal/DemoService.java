@@ -7,6 +7,7 @@ import com.zero.entity.ExcelData4DataMigration;
 import com.zero.entity.XFileInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -63,17 +64,14 @@ public abstract class DemoService implements DemoIni {
 
 		// 源数据处理
 		LinkedHashMap<String, Entity> o_transformInfoMap = transformDBTextSpitInfo2LinkedHashMap_O(o_dbText);
-		//o_split=null;
 		log.info("源数据字段数量: " + o_transformInfoMap.size());
 
 		// 目标数据处理
 		LinkedHashMap<String, Entity> t_transformInfoMap = transformDBTextSpitInfo2LinkedHashMap_T(t_dbText);
-		//t_split=null;
 		log.info("目标数据字段数量: " + t_transformInfoMap.size());
 
 		// 映射文件处理
 		LinkedHashMap<String, String> m_transformInfoMap = transformMapTextSpitInfo2LinkedHashMap_M(errorInfoList, m_mapText);
-		//m_split=null;
 		log.info(" 非系统字段映射数量: " + m_transformInfoMap.size());
 
 
@@ -81,7 +79,7 @@ public abstract class DemoService implements DemoIni {
 
 		//问题数据整合处理
 		m_transformInfoMap.forEach((o_name, t_name) -> {
-			dealData(errorInfoList, o_transformInfoMap, t_transformInfoMap, o_name, t_name);
+			 dealData(errorInfoList, o_transformInfoMap, t_transformInfoMap, o_name, t_name);
 		});
 		if (errorInfoList.size() == 0) {
 			log.info("数据对比完成，未发现异常数据");
