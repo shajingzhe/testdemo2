@@ -54,6 +54,8 @@ public class FileUtils {
 			writer.setOnlyAlias(true);
 			// 一次性写出内容，使用默认样式，强制输出标题
 			writer.write(rows, true);
+			//列宽度自动伸缩
+			autoSetSizeColumn(aliasMap, writer);
 			//out为OutputStream，需要写出到的目标流
 			writer.flush(os);
 			xlsDoc_ByteOS = (ByteArrayOutputStream) os;
@@ -66,6 +68,14 @@ public class FileUtils {
 			os.close();
 		}
 		return xlsDoc_ByteOS != null ? xlsDoc_ByteOS.toByteArray() : null;
+	}
+
+	private static void autoSetSizeColumn(LinkedHashMap<String, String> aliasMap, ExcelWriter writer) {
+		int columnNum = aliasMap.size();
+		while (columnNum > 0) {
+			columnNum--;
+			writer.autoSizeColumn(columnNum);
+		}
 	}
 
 	/**
@@ -85,8 +95,11 @@ public class FileUtils {
 			if (xlsCreateConfigInfoList.size() > 0) {//第一页特殊处理
 				writer.renameSheet(xlsCreateConfigInfoList.get(0).getSheetName());
 				rows = CollUtil.newArrayList(xlsCreateConfigInfoList.get(0).getObjectList());
+				LinkedHashMap<String, String> aliasMap=xlsCreateConfigInfoList.get(0).getAliasMap();
 				//自定义标题别名
-				writer.setHeaderAlias(xlsCreateConfigInfoList.get(0).getAliasMap());
+				writer.setHeaderAlias(aliasMap);
+				//列宽度自动伸缩
+				autoSetSizeColumn(aliasMap, writer);
 				writer.setOnlyAlias(true);
 				xlsCreateConfigInfoList.remove(0);
 				// 一次性写出内容，使用默认样式，强制输出标题
@@ -96,8 +109,11 @@ public class FileUtils {
 			for (XLSCreateConfigInfo xlsCreateConfigInfo : xlsCreateConfigInfoList) {
 				writer.setSheet(xlsCreateConfigInfo.getSheetName());
 				rows = CollUtil.newArrayList(xlsCreateConfigInfo.getObjectList());
+				LinkedHashMap<String, String> aliasMap=xlsCreateConfigInfo.getAliasMap();
 				//自定义标题别名
 				writer.setHeaderAlias(xlsCreateConfigInfo.getAliasMap());
+				//列宽度自动伸缩
+				autoSetSizeColumn(aliasMap, writer);
 				writer.setOnlyAlias(true);
 				// 一次性写出内容，使用默认样式，强制输出标题
 				writer.write(rows, true);
@@ -113,6 +129,7 @@ public class FileUtils {
 		}
 		return xlsDoc_ByteOS != null ? xlsDoc_ByteOS.toByteArray() : null;
 	}
+
 
 	/**
 	 * 生成文件
