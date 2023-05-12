@@ -19,7 +19,7 @@ import java.util.List;
  * @date 2023/5/4 下午2:25
  */
 @Slf4j
-public class DemoServiceImp extends DemoService {
+public class DemoIniImp extends DemoService {
 
 	private static LinkedHashMap<String, String> aliasMap = new LinkedHashMap<>();
 
@@ -45,7 +45,7 @@ public class DemoServiceImp extends DemoService {
 
 	}
 
-	public DemoServiceImp() {
+	public DemoIniImp() {
 		super(folderPath, aliasMap, rootPath_downFile);
 	}
 
