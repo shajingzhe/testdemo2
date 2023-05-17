@@ -6,6 +6,7 @@ import com.zero.utils.StrUtils;
 import com.zero.utils.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
@@ -24,15 +26,38 @@ import java.util.stream.Collectors;
 
 public class CommonTest {
 
-	public static void main(String[] args) {
-		testTrim();
+	private volatile static int i =1;
 
+	public static void main(String[] args) throws IOException {
+		String method = method();
+		System.out.println(method);
+	}
+
+	public static String  method() throws IOException {
+		Student student1=new Student();
+		student1.setName("张三122");
+		Student student2=new Student();
+		student2.setName("李四21");
+		try{
+			return student1.getName();
+		}catch (Exception e){
+
+		}finally {
+			student1=null;
+			//System.in.read();
+			System.gc();
+			System.out.println("触发成功");
+			//System.in.read();
+		}
+		return student2.getName();
 	}
 
 	private static void testTrim() {
 		String str = "   hello world。 ";
 		str = str.trim(); // 去掉前面的空格
 		System.out.println(str);
+		HashMap map=new HashMap<>();
+		map.entrySet();
 	}
 
 	private static void test12() {
@@ -41,14 +66,14 @@ public class CommonTest {
 		Integer c = null;
 		Boolean flag = false;
 // a*b 的结果是 int 类型，那么 c 会强制拆箱成 int 类型，抛出 NPE 异常
-		Integer result=(flag? a*b : c);//todo s 存在疑问放进去时，参数的类型是看变量的类型还是对象的类型
+		Integer result = (flag ? a * b : c);//todo s 存在疑问放进去时，参数的类型是看变量的类型还是对象的类型
 	}
 
 	public static void test11() {
 		method(null);
 	}
 
-	public static void method(String param) {
+	public static void method( String param) {
 		switch (param) {
 // 肯定不是进入这里
 			case "sth":

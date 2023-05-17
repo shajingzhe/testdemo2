@@ -40,7 +40,6 @@ public abstract class DemoService implements DemoIni {
 	/**
 	 * 地方公服dm转mysql数据对比工具
 	 */
-	@Test
 	public void parseSysParameterText(String tableName) {//"司法鉴定所"
 
 		long start = System.currentTimeMillis();
