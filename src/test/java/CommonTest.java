@@ -35,9 +35,9 @@ public class CommonTest {
 
 	public static String  method() throws IOException {
 		Student student1=new Student();
-		student1.setName("张三122");
+		student1.setName("张三");
 		Student student2=new Student();
-		student2.setName("李四21");
+		student2.setName("李四");
 		try{
 			return student1.getName();
 		}catch (Exception e){

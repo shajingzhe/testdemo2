@@ -7,7 +7,7 @@ public class getIP {
 
     public static void main(String[] args) throws UnknownHostException {
         String m="2411212";
-        a="43333";
+        a="4";
         System.out.println(InetAddress.getLocalHost());
     }
 
