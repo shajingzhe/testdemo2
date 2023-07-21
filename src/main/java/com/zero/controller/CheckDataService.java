@@ -47,10 +47,11 @@ public class CheckDataService {
 				Model model = new Model();
 				model.setOriginal("");
 				model.setInfer("");
+				model.setSimilarity(1);
 				resultList.add(model);
 				continue;
 			}
-			resultValue = juCunName;
+			resultValue = "";
 			float levenshteinMax = 0;
 			String zhengName = MapUtil.getStr(map, "街镇乡");
 			List<String> communityNameList = communityMap.get(zhengName);
@@ -82,28 +83,17 @@ public class CheckDataService {
 			Model model = new Model();
 			model.setOriginal(juCunName);
 			model.setInfer(resultValue);
+			model.setSimilarity(levenshteinMax);
 			resultList.add(model);
 		}
 
 		LinkedHashMap<String, String> aliasMap = new LinkedHashMap<>();
 		aliasMap.put("original", "源数据");
 		aliasMap.put("infer", "推测数据");
+		aliasMap.put("similarity", "相似度");
 		List<Object> objectList = new ArrayList<>();
 		objectList.addAll(resultList);
-		String filePath = "";
-		try {
-			byte[] fileBytes = FileUtils.creatXls(objectList, aliasMap);
-			String fileName = "社区信息推测(2.0).xls";
-			XFileInfo xfileInfo = new XFileInfo("系统工具生成文件");
-			MultipartFile file = new MockMultipartFile(fileName, fileBytes);
-			xfileInfo.setFileName(fileName);
-			xfileInfo.setFile(file);
-			filePath = FileUtils.uploadFile(xfileInfo, "/home/homolo/桌面/文档/测试文档");
-		} catch (Exception e) {
-			e.printStackTrace();
-			return;
-		}
-		log.info("文档生产完毕，文件地址：\n" + filePath);
+		FileUtils.generateXls(aliasMap, objectList, "社区信息推测(2.2).xls", "/home/homolo/桌面/文档/测试文档");
 	}
 
 	/**
@@ -131,5 +121,6 @@ public class CheckDataService {
 	private class Model {
 		String original;
 		String infer;
+		float similarity;
 	}
 }
