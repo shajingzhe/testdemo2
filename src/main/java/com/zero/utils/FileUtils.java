@@ -7,7 +7,9 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.zero.entity.XFileInfo;
 import com.zero.entity.XLSCreateConfigInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -15,6 +17,7 @@ import java.rmi.RemoteException;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+@Slf4j
 public class FileUtils {
 
 	//文件输出位置
@@ -218,5 +221,28 @@ public class FileUtils {
 	 */
 	public static String removeEndSymbol(String addressPath) {
 		return StrUtil.endWith(addressPath, "/") ? StrUtil.split(addressPath, addressPath.length() - 1)[0] : addressPath;
+	}
+
+	/**
+	 * 生成xls文件
+	 * @param aliasMap
+	 * @param objectList
+	 * @param fileName
+	 * @param storePath
+	 */
+	public static void generateXls(LinkedHashMap<String, String> aliasMap, List<Object> objectList, String fileName, String storePath) {
+		String filePath = "";
+		try {
+			byte[] fileBytes = FileUtils.creatXls(objectList, aliasMap);
+			XFileInfo xfileInfo = new XFileInfo("系统工具生成文件");
+			MultipartFile file = new MockMultipartFile(fileName, fileBytes);
+			xfileInfo.setFileName(fileName);
+			xfileInfo.setFile(file);
+			filePath = FileUtils.uploadFile(xfileInfo, storePath);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+		log.info("文档生产完毕，文件地址：\n" + filePath);
 	}
 }
