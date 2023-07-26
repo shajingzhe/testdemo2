@@ -29,8 +29,34 @@ public class CommonTest {
 	private volatile static int i =1;
 
 	public static void main(String[] args) throws IOException {
-		String method = method();
-		System.out.println(method);
+		int a=method16();
+		System.out.println(a);
+	}
+
+	public static List<String> method15(){
+		List<String> a=new ArrayList<>();
+		try{
+			a.add("1");
+			return a;
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+			a.add("2");
+		}
+		return a;
+	}
+
+	public static int method16(){
+		Integer a=Integer.valueOf(1);
+		try{
+			a=2;
+			return a;
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+
+		}
+		return a;
 	}
 
 	public static String  method() throws IOException {
