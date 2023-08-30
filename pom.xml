@@ -139,6 +139,18 @@
             <artifactId>google-collect</artifactId>
             <version>snapshot-20080530</version>
         </dependency>
+
+        <!-- 内存查看 -->
+        <dependency>
+            <groupId>org.apache.lucene</groupId>
+            <artifactId>lucene-core</artifactId>
+            <version>4.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+        </dependency>
     </dependencies>
 
     <properties>

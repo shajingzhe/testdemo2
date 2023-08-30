@@ -26,50 +26,51 @@ import java.util.stream.Collectors;
 
 public class CommonTest {
 
-	private volatile static int i =1;
+	private volatile static int i = 1;
 
 	public static void main(String[] args) throws IOException {
-		int a=method16();
-		System.out.println(a);
+		for (int i = 1; i <= 1000000; i++) {
+			System.out.print("789\r当前数值：" +i);
+		}
 	}
 
-	public static List<String> method15(){
-		List<String> a=new ArrayList<>();
-		try{
+	public static List<String> method15() {
+		List<String> a = new ArrayList<>();
+		try {
 			a.add("1");
 			return a;
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			a.add("2");
 		}
 		return a;
 	}
 
-	public static int method16(){
-		Integer a=Integer.valueOf(1);
-		try{
-			a=2;
+	public static int method16() {
+		Integer a = Integer.valueOf(1);
+		try {
+			a = 2;
 			return a;
-		}catch (Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 
 		}
 		return a;
 	}
 
-	public static String  method() throws IOException {
-		Student student1=new Student();
+	public static String method() throws IOException {
+		Student student1 = new Student();
 		student1.setName("张三122");
-		Student student2=new Student();
+		Student student2 = new Student();
 		student2.setName("李四21");
-		try{
+		try {
 			return student1.getName();
-		}catch (Exception e){
+		} catch (Exception e) {
 
-		}finally {
-			student1=null;
+		} finally {
+			student1 = null;
 			//System.in.read();
 			System.gc();
 			System.out.println("触发成功");
@@ -82,7 +83,7 @@ public class CommonTest {
 		String str = "   hello world。 ";
 		str = str.trim(); // 去掉前面的空格
 		System.out.println(str);
-		HashMap map=new HashMap<>();
+		HashMap map = new HashMap<>();
 		map.entrySet();
 	}
 
@@ -99,7 +100,7 @@ public class CommonTest {
 		method(null);
 	}
 
-	public static void method( String param) {
+	public static void method(String param) {
 		switch (param) {
 // 肯定不是进入这里
 			case "sth":
