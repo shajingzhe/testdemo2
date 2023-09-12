@@ -14,17 +14,23 @@ public class Person {
 
 	private Integer age;
 
-	private Integer Salary;
+	private Integer salary;
 
-	private String Sex;
+	private String sex;
 
 	private String area;
 
 	public Person(String name, Integer age, Integer salary, String sex, String area) {
 		this.name = name;
 		this.age = age;
-		Salary = salary;
-		Sex = sex;
+		this.salary = salary;
+		this.sex = sex;
 		this.area = area;
+	}
+
+	public Person(String name, Integer age, Integer salary) {
+		this.name = name;
+		this.age = age;
+		this.salary = salary;
 	}
 }

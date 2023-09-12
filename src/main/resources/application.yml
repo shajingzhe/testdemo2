@@ -1,0 +1,129 @@
+server:
+  port: 8090
+  ssl:
+    http-port: 8080
+    enabled: false
+    protocol: TLS
+    key-store: classpath:lib\https.jks
+    key-store-password: pj.fzzx.sh.gov.cn
+
+  servlet:
+    root_uri: http://localhost:8090/
+    default_logintype: 0
+    session:
+      timeout: 86400s
+
+  tongweb:
+    license:
+      type: file
+      path: classpath:lib\tongweb_license.dat
+
+spring:
+  thymeleaf:
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    cache: false
+
+  datasource:
+    url: jdbc:dm://127.0.0.1:5236
+    driver-class-name: dm.jdbc.driver.DmDriver
+    username: SYSDBA
+    password: sjz58713117
+    druid:
+      url: ${spring.datasource.url}
+      username: ${spring.datasource.username}
+      password: ${spring.datasource.password}
+      driver-class-name: ${spring.datasource.driver-class-name}
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+      max-request-size: 200MB
+      #路径地址请勿以“/”结尾
+      location: D:/FZZX_KT/temp
+
+    fonts:
+      location: C:\Windows\Fonts
+
+edi_config:
+  zwdt-user:
+    #测试环境配置
+    #    access_url: http://117.184.226.149/uc/login/login.jsp
+    #    base_url: https://183.194.243.82/clientgateway/
+    #    app_id: 5bd5fde7-25b6-4964-b7b7-12cf58eae24c
+    #    app_secret: 888b5610-bdf7-4b21-98c0-509e604d31c3
+    #    appName_getUserInfo: 6e9809b6-b9dc-49d3-9a6b-8792cd5d6db8
+    #    正式环境配置
+    access_url: http://zwdtuser.sh.gov.cn/uc/login/login.jsp
+    base_url: https://ywopen.sh.gov.cn/clientgateway/
+    app_id: c1953419-992e-49f6-bebd-3b6797c9928a
+    app_secret: 73a0203a-a056-4788-b131-38cb2c8e5688
+    appName_getUserInfo: 6e9809b6-b9dc-49d3-9a6b-8792cd5d6db8
+  #电子印章平台
+  dzyz-api:
+    base_url: http://61.152.146.46:9182/
+    access_token: y1gM5jLFx7
+    access_secret: U76eWkM9JL7rb245mQu3Zj4DKTCT4T
+  #个人可信身份多源认证统一服务平台配置
+  dyrz-api:
+    base_url: https://msc.sheca.com/v1/auth/
+    app_id: a9de23aa-dedf-41a6-a7b3-90a19dfd1e79
+    cert: MIIFPDCCBCSgAwIBAgIQaXzl2CsvXyUTrcyfip5lEDANBgkqhkiG9w0BAQUFADA2MQswCQYDVQQGEwJDTjERMA8GA1UEChMIVW5pVHJ1c3QxFDASBgNVBAMTC1NIRUNBIEFkbWluMB4XDTE1MDMyNTE2MDAwMFoXDTE5MDMyNTE2MDAwMFowSDELMAkGA1UEBhMCQ04xDzANBgNVBAgMBuS4iua1tzEOMAwGA1UECgwFU0hFQ0ExGDAWBgNVBAMMDzEwMS4yMzEuMjA2LjEyMjCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAhPTWxx+8X3JNIL59mujgSp9+iIyJmDLZfQ4qruzdIAZNvMl59/OGgPzr+SDT10MDsNQ3p8BMTI60VIanJe2uUyN6K6STgkJ0zWZxz+fo2fqa6D3LQLSkrcCqHIpiIYAQrVHwV8IJ6bfBCgby1Hend8L9DAWJIJ65LROGI6BS5B0CAwEAAaOCArYwggKyMB8GA1UdIwQYMBaAFFHZRlKmvKqR3mTJZWCfOchJCrk1MB0GA1UdDgQWBBTOBWGTmsqo4H9yLLrDdLxcRsUkQDALBgNVHQ8EBAMCBsAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMEEGA1UdIAQ6MDgwNgYIKoEcAcU4gRUwKjAoBggrBgEFBQcCARYcaHR0cDovL3d3dy5zaGVjYS5jb20vcG9saWN5LzAJBgNVHRMEAjAAMIHmBgNVHR8Egd4wgdswgZ+ggZyggZmGgZZsZGFwOi8vbGRhcDIuc2hlY2EuY29tOjM4OS9jbj1DUkwxNDc1LmNybCxvdT1SQTkwMjAxMDAsb3U9Q0EyMCxvdT1jcmwsbz1VbmlUcnVzdCBBZG1pbj9jZXJ0aWZpY2F0ZVJldm9jYXRpb25MaXN0P2Jhc2U/b2JqZWN0Q2xhc3M9Y1JMRGlzdHJpYnV0aW9uUG9pbnQwN6A1oDOGMWh0dHA6Ly9sZGFwMi5zaGVjYS5jb20vQ0EyMC9SQTkwMjAxMDAvQ1JMMTQ3NS5jcmwwgYAGCCsGAQUFBwEBBHQwcjA4BggrBgEFBQcwAYYsaHR0cDovL29jc3AzLnNoZWNhLmNvbS9TaGVjYS9zaGVjYWFkbWluLm9jc3AwNgYIKwYBBQUHMAKGKmh0dHA6Ly9sZGFwMi5zaGVjYS5jb20vcm9vdC9zaGVjYWFkbWluLmRlcjCBiQYGKoEcAcU4BH8wfTBJBggqgRwBxTiBEAQ9bGRhcDovL2xkYXAyLnNoZWNhLmNvbS9vdT1zaGVjYSBjZXJ0aWZpY2F0ZSBjaGFpbixvPXNoZWNhLmNvbTARBggqgRwBxTiBEwQFNjYzMTEwHQYIKoEcAcU4gRQEEUpKMDAxMTEwMzgzMTEzMzc0MA0GCSqGSIb3DQEBBQUAA4IBAQCoyjJLgds8b2fAlOgwbxglLUiIYw47xRRTAzsdTR9QuSrVVnkpI6/60EJqv5phd7zfYUxUg5IV4cnOqYuFvrcDdz6yLWPNi1JACdEJ76xQvxblTra0LtOAj2D0AqJJ+aWxzTfszNARlHMLJh6RMrgKwK91FbEloTOAW1i2Pg+06AiRU0raG/pnoXQ4qLJtmyj1nVJQpQXL9Qy2pNzntxJUG7NNtdVoA30Jv6RDZBPeHoPLU6TV0KzWSc7X/Wqj0UxDEBRx8HyFX9xRHTyX87P0B8RW/dPsTP3LvTK9267turJHlLsc06PaozLdNgAFaN11WEMKJ9LKf87CQ0qJXNFd
+    key: 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
+    key_pin: 11111111
+
+mybatis:
+  # 指定sql映射文件位置
+  mapper-locations: classpath:mapper/*.xml
+  #为实体类包下的所有类注册别名
+  type-aliases-package: com.exatell.mapper
+  #打印mybatis日志
+  configuration:
+    #org.apache.ibatis.logging.stdout.StdOutImpl 控制台打印sql语句方便调试sql语句执行错误
+    #org.apache.ibatis.logging.log4j2.Log4j2Impl:这个不在控制台打印查询结果,但是在log4j中打印
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    #开启驼峰命名 开启后
+#    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    com.exatell.mapper: debug
+
+#专家库对接地址参数
+ZJK:
+  getexpertInfo-api: https://zj.fzzx.sh.gov.cn/expert-core/Interface/getexpertInfo
+  setassessmentInfo-api: https://zj.fzzx.sh.gov.cn/expert-core/Interface/setassessmentInfo
+  getexpertJoin-api: https://zj.fzzx.sh.gov.cn/expert-core/Interface/getexpertJoin
+  getexpertVerify-api: https://zj.fzzx.sh.gov.cn/expert-core/Interface/getexpertVerify
+
+NKGL:
+  checkSynContractPay-api: http://10.83.248.121:8088/xyjzx/yj/checkSynContractPay.do
+  synContractPay-api: http://10.83.248.121:8088/xyjzx/yj/synContractPay.do
+
+open:
+  xss:
+    #是否开启防御xss攻击
+    protect: true
+  routing:
+    #是否开启管理员登录地址ip限制
+    audit: false
+  timeTask:
+    #是否开启定时任务
+    run: false
+  service:
+    #系统开启维护模式
+    maintenance: false
+    #系统开启测试模式 测试模式下不发送短信，短信发送为假发送
+    test: true
+
+baseConfig:
+  #用户密码过期时间（单位天）
+  passwordExpirationTimeDay: 90
+
+localServer:
+  #部署服务器ip地址（用于内控系统）
+  ip: 172.23.90.59
+

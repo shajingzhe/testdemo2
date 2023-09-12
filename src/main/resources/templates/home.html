@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" class="h-100">
+<head th:replace="~{_layout::html_head(~{::title},~{::link},~{::script})}">
+    <title>平台首页</title>
+    <link rel="stylesheet" th:href="@{/components/image-viewer/viewer.css}">
+
+    <script th:src="@{/components/image-viewer/viewer.js}"></script>
+    <script th:inline="javascript">
+        var wangEditorTools = [
+            'head',  // 标题
+            'bold',  // 粗体
+            'fontSize',  // 字号
+            'fontName',  // 字体
+            'italic',  // 斜体
+            'underline',  // 下划线
+            'strikeThrough',  // 删除线
+            'foreColor',  // 文字颜色
+            'backColor',  // 背景颜色
+            'link',  // 插入链接
+            'list',  // 列表
+            'justify',  // 对齐方式
+            'quote',  // 引用
+            'image',  // 插入图片
+            'table',  // 表格
+            'undo',  // 撤销
+            'redo'  // 重复
+        ]
+        $(function () {
+            document.title = [[${active_title}]];
+            let user = [[${user}]];
+            var defaultHash = window.location.hash;
+            if (defaultHash) {
+                openFunction(defaultHash);
+            } else {
+                //defaultHash = [[${(user.userGroup!="Company"&&user.Password==null)}]] ? "#account/info" : [[${user.UserRole=="Expert"?'#/subjectReview/expert/default_page':'#/subject/personal/contentList_page'}]];
+
+                if (user.userRole == "Expert") {
+                    defaultHash = "#/subjectReview/expert/default_page";
+                } else if (user.userRole == "Personal") {
+                    defaultHash = "#/subject/personal/contentList_page"
+                } else if ([[${user.userGroup=='Company'}]]) {
+                    if ([[${phoneExist}]] != null) {
+                        defaultHash = "#account/perfectInformation";
+                    } else {
+                        defaultHash = "#/subject/company/list_page"
+                    }
+                }
+                openFunction(defaultHash);
+            }
+            $(`button[data-target="${defaultHash}"]`).addClass("active");
+
+            $("#account_menu").find("a.dropdown-item").click(function () {
+                menuLink($(this));
+            });
+
+            $("#menu").find('button[data-bs-toggle="pill"]').on('click', function () {
+                var targetUrl = $(this).attr('data-target');
+                openFunction(targetUrl);
+            });
+            if ([[${mustChangePwd}]] == "1") {
+                changePwd();
+            }
+        });
+
+        function changePwd() {
+            showDialog("user/changePwd", {area: ["300px", "400px"], title: "修改密码"});
+        }
+
+        function menuLink(o) {
+            var url = o.attr("href");
+            openFunction(url.split("?")[0]);
+        }
+
+        function openFunction(url) {
+            if (!url)
+                url = "#account/info";
+            if (url && url.indexOf("#") == 0)
+                url = url.substring(1);
+            $("#mainFrame").css("height", "");
+            $("#mainFrame").attr("src", url);
+        }
+
+        function changePwd() {
+            showDialog("/user/changePwd", {area: ["300px", "400px"], title: "修改密码"});
+        }
+
+        function reCalcHeight(height) {
+            $("#mainFrame").height(height);
+        }
+
+        function showImageViewer(id, tag) {
+            XFile.showImageViewer(id, tag);
+        }
+
+        function refresh() {
+            window.location.href = "/home";
+        }
+
+        function viewFile(fileName) {
+            showDialog("/xfile/localFile?fileName=" + fileName, {
+                area: ["80%", "100%"],
+                title: "查看"
+            });
+        }
+
+    </script>
+</head>
+<body class="d-flex flex-column h-100 bg-light">
+
+<header>
+    <div class="px-3 py-3 text-white bg-sdrc-blue">
+        <div class="container-lg ps-3">
+            <a href="/home" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-light text-decoration-none">
+                <img th:src="@{/img/logo.png}" width="80" height="80"/>
+                <span class="fs-1 fw-bold ms-3"><th:block
+                        th:text="${active_title}"></th:block></span>
+            </a>
+        </div>
+    </div>
+    <div class="px-3 py-2 border-bottom mb-3 bg-white">
+        <div class="container-lg">
+            <div class="d-flex flex-wrap align-items-center justify-content-start">
+                <ul class="nav nav-pills col-sm-8 col-dm-10 col-lg-auto me-lg-auto mb-md-0"
+                    role="tablist" th:if="${user!=null}" id="menu">
+                    <th:block th:if="${user.getUserRole() eq 'Personal'&& !user.disabled}">
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="pill"
+                                    data-target="#/subject/personal/contentList_page">首页
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="pill"
+                                    data-target="#/subject/personal/create_page">填写申请书
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="pill"
+                                    data-target="#/subject/personal/list_page">我的申请书
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="btn dropdown-toggle btn-outline-primary m-1"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">领军人物工作室
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li>
+                                    <button type="button" class="dropdown-item btn btn-outline-primary m-1"
+                                            data-bs-toggle="pill"
+                                            data-target="#/studio/personal/createAppFrom">填写申请书
+                                    </button>
+                                </li>
+                                <li>
+                                    <button type="button" class="dropdown-item btn btn-outline-primary m-1"
+                                            data-bs-toggle="pill"
+                                            data-target="#/studio/personal/manageAppFrom">我的申请书
+                                    </button>
+                                </li>
+                                <li>
+                                    <button type="button" class="dropdown-item btn btn-outline-primary m-1"
+                                            data-bs-toggle="pill"
+                                            data-target="#/studio/personal/associatedProject">关联项目
+                                    </button>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="pill"
+                                    data-target="#/project/personal/list_page">我的项目
+                            </button>
+                        </li>
+                        <!--                        todo s 待添加完善-->
+                        <!--                        <li class="nav-item" role="presentation">-->
+                        <!--                            <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="pill"-->
+                        <!--                                    data-target="#/subject/creator">领军人物-->
+                        <!--                            </button>-->
+                        <!--                        </li>-->
+                    </th:block>
+                    <!--                    todo s 待添加完善-->
+                    <th:block th:if="${user.getUserRole() eq 'Company'&& (!user.disabled&&companyInfo.enabled)}">
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="pill"
+                                    data-target="#/subject/company/list_page">首页
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="pill"
+                                    data-target="#/subject/company/list_page">申请书查询
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="pill"
+                                    data-target="#/project/company/list_page">项目查询
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="pill"
+                                    data-target="#/studio/company/manageAppFrom">领军人物工作室
+                            </button>
+                        </li>
+                        <!--                        todo s 添加完善-->
+                    </th:block>
+                    <th:block th:if="${user.getUserRole() eq 'Expert'&& !user.disabled}">
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="pill"
+                                    data-target="#/subjectReview/expert/default_page">首页
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="pill"
+                                    data-target="#/subjectReview/expert/subjectReviewTaskList_page">招标评审
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="pill"
+                                    data-target="#/subjectInterviewReview/expert/subjectReviewTaskList_page">面谈比选
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="pill"
+                                    data-target="#/researchResultsReview/expert/reviewTaskList_page">成果评审
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button type="button" class="btn btn-outline-primary m-1" data-bs-toggle="pill"
+                                    data-target="#/studioReview/expert/reviewTaskList_page">领军人物专家评审
+                            </button>
+                        </li>
+                        <!--                        todo s 添加完善-->
+                    </th:block>
+                </ul>
+                <div class="col-sm-4 col-dm-2 col-lg-auto">
+                    <div class="dropdown float-end text-end" id="account_menu">
+                        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle fs-5"
+                           id="dropdownUser1"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor"
+                                 class="bi bi-person-circle" viewBox="0 0 24 24">
+                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                <path fill-rule="evenodd"
+                                      d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                            </svg>
+                            <th:block th:text="${user!=null?user.userName:'用户名'}"></th:block>
+                        </a>
+                        <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1" style="">
+                            <th:block th:if="${!user.disabled}">
+                                <li><a class="dropdown-item" href="#account/info">个人资料</a></li>
+                            </th:block>
+                            <li><a class="dropdown-item" href="javascript:changePwd()">修改密码</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="javascript:"
+                                   onclick="if(confirm('确定退出系统？')) window.location.href='/logout';">退出登录</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+</div>
+<main role="main" class="flex-shrink-0">
+    <div class="container-fluid container-xl ps-3">
+        <iframe id="mainFrame" src="" class="w-100 min-vh-100 bg-light border-1 bg-info"></iframe>
+    </div>
+</main>
+<footer class="footer mt-auto py-3 bg-sdrc-blue" th:include="~{_layout::page_footer}"></footer>
+</body>
+</html>

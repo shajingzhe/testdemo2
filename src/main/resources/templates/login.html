@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" class="h-100">
+
+<head th:replace="~{_layout::html_head(~{::title},~{::style},~{::script})}">
+    <title>登录</title>
+    <style>
+        main {
+            background-image: url("[[@{/}]]img/login_bg.png");
+            background-size: auto 150%;
+            background-position: 15% center;
+            background-repeat: no-repeat;
+            min-height: 600px;
+        }
+
+        #imgCaptcha {
+            width: 80px;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+
+        #label_qa {
+            position: fixed;
+            right: 0px;
+            margin: 10% 0px 0px;
+        }
+
+        @media (max-width: 1500px) {
+            #label_qa {
+                top: 450px
+            }
+        }
+    </style>
+    <script th:src="@{/js/jsencrypt.js}"></script>
+    <script th:inline="javascript">
+        var publicKey = [[${publicKey}]];
+        var loginType = [[${activeLoginType}]];
+        $(function () {
+            if (self != top)
+                parent.window.location.replace(window.location.href);
+
+            var error = [[${error}]];
+            if (error) {
+                showMessage(error);
+            }
+
+            $("#txtLoginID").keydown(function (event) {
+                if ((event.which == 9) || (event.which == 13)) {
+                    $("#txtPassword").focus();
+                    return false;
+                }
+            });
+            $("#txtPassword").keydown(function (event) {
+                if ((event.which == 9) || (event.which == 13)) {
+                    $("#txtCaptcha").focus();
+                    return false;
+                }
+            });
+            $("#txtCaptcha").keydown(function (event) {
+                if ((event.which == 9) || (event.which == 13)) {
+                    doLogin();
+                }
+            });
+
+            $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function (event) {
+                var role = $(event.target).attr('data-role');
+                var placeholderLoginID = "账号用户名";
+                var registerTarget = "";
+                loginType = 1;
+                $("#btnLoginZWDT").show();
+                if (role == 0) {//个人账号
+                    $('#listPJLX').show();
+                    $('#pills-tabContent').show();
+                    placeholderLoginID = "身份证号码";
+                    registerTarget = "personal";
+                } else {
+                    $('#listPJLX').hide();
+                    $('#pills-tabContent').hide();
+                }
+                if (role == 1) {//单位账号
+                    placeholderLoginID = "统一社会信用代码";
+                    registerTarget = "company";
+                    loginType = 2;
+                }
+
+                if (role == 2) {
+                    $('#linkRegister').hide();
+                    $("#btnLoginZWDT").hide();
+                    $("#findPassword").hide();
+                    $("#YWTB").attr("hidden", true);
+                    $("#btnLoginZJBySJ").removeAttr("hidden");
+                } else {
+                    $("#YWTB").removeAttr("hidden");
+                    $("#btnLoginZJBySJ").attr("hidden", true);
+                    $('#linkRegister').show();
+                    $("#findPassword").show();
+                    $('#linkRegister').attr('href', 'register/' + registerTarget);
+                }
+
+                $('#txtLoginID').attr('placeholder', placeholderLoginID);
+
+            });
+
+            $("#btnLoginZWDT").click(function () {
+                window.location.href = [[${zwdt_tokenaccess_uri}]] + "?type=" + loginType
+                    + "&redirect_uri=" + encodeURIComponent([[${zwdt_redirect_uri}]] + "auth/login");
+            });
+            if (loginType && loginType >= 0) {
+                var lastTabElement = document.querySelector(`#tabLoginType a[data-role="${loginType}"]`);
+                var lastTab = new bootstrap.Tab(lastTabElement);
+                lastTab.show();
+            }
+
+            $("#btnLoginZJBySJ").click(function () {
+                window.location.href = "/home/expertPhoneLogin";
+            });
+        });
+
+        function doLogin() {
+            if (!validateForm())
+                return false;
+            var encrypt = new JSEncrypt();
+            encrypt.setPublicKey(publicKey);
+            var encryptedData = encrypt.encrypt($('#txtPassword').val());
+
+            var data = {
+                loginId: $("#txtLoginID").val(),
+                password: encryptedData,
+                publickey: publicKey,
+                captcha: $("#txtCaptcha").val(),
+            };
+            var response = jqueryAjax.post("/user/login", data);
+            if (!response) {
+                alterMessage("请求失败");
+                return false;
+            }
+            if (response.result) {
+                window.location.href = response.data;
+            } else {
+                $("#txtCaptcha").val("");
+                refreshCaptcha();
+                alterMessage(response.msg ? response.msg : "登录失败");
+            }
+        }
+
+        function validateForm() {
+            var validFlag = $(document.forms[0]).validate({
+                rules: {
+                    loginid: {required: true},
+                    password: {required: true},
+                    captcha: {
+                        required: true,
+                        remote: {
+                            url: "/public/checkCaptcha",
+                            type: "post",
+                            async: false
+                        }
+                    }
+                },
+                messages: {
+                    loginid: {required: "请输入登录账号"},
+                    password: {required: "请输入登录密码"},
+                    captcha: {required: "请输入验证码", remote: "验证码比对失败"}
+                },
+                errorPlacement: function (error, element) {
+                    $(element).addClass("is-invalid");
+                    error.addClass("invalid-tooltip");
+                    error.insertBefore(element);
+                }, success: function (error, element) {
+                    error.remove();
+                    $(element).removeClass("is-invalid");
+                }
+            }).form();
+            return validFlag;
+        }
+
+        function refreshCaptcha() {
+            var getTimestamp = new Date().getTime();
+            $("#imgCaptcha").attr("src", "/public/getCaptcha?t=" + getTimestamp);
+        }
+
+        function viewFile(fileName) {
+            showDialog("/xfile/localFile?fileName=" + fileName, {
+                area: ["80%", "100%"],
+                title: "查看"
+            });
+        }
+
+        function demo() {
+            var applicantGender = page.getWidget('applicantGender');
+            var applicantIdNumber = page.getWidget('applicantIdNumber');
+            var applicantIDType = page.getWidget('applicantIDType');
+            var applicantName = page.getWidget('applicantName');
+            if (fieldValue == '1' || fieldValue == '4' || fieldValue == '6' || fieldValue == null) {
+                applicantGender.hidden = false;
+                applicantIdNumber.hidden = false;
+                applicantIDType.hidden = false;
+                applicantName.hidden = false;
+            } else {
+                applicantGender.hidden = true;
+                applicantIdNumber.hidden = true;
+                applicantIDType.hidden = true;
+                applicantName.hidden = true;
+            }
+            page.refresh('applicantGender');
+            page.refresh('applicantIdNumber');
+            page.refresh('applicantIDType');
+            page.refresh('applicantName');
+        }
+
+    </script>
+</head>
+<body class="d-flex flex-column h-100 bg-light">
+<header class="d-flex flex-wrap justify-content-center py-4 border-bottom bg-sdrc-blue">
+    <a href="/login" class="d-flex align-items-center mb-3 mb-md-0 text-light text-decoration-none">
+        <img src="../static/img/logo.png" th:src="@{/img/logo.png}" width="80" height="80"/>
+        <span class="fs-1 fw-bold"></span>
+    </a>
+</header>
+<main role="main" class="flex-shrink-0 text-center">
+    <div class="container">
+        <div class="p-xl-2 mx-auto my-xl-3">
+            <div id="label_qa">
+                <a href="/commonQuestion" target="_blank" class="btn btn-outline-secondary text-dark">
+                    <i class="bi bi-question"></i>
+                    常见问题
+                </a>
+            </div>
+            <div class="row justify-content-md-center" style="height: 550px">
+                <div class="col-sm-12 col-md-12 col-xl-7 my-auto">
+                </div>
+                <div class="col-sm-12 col-md-7 col-xl-5 mt-sm-3">
+                    <ul class="nav nav-tabs flex-column flex-sm-row col-sm-10 col-xs-12 mx-auto" role="tablist"
+                        id="tabLoginType">
+                        <li class="nav-item col-md-4 col-sm-4 col-xs-4" role="presentation">
+                            <a class="nav-link" data-bs-toggle="tab" href="#" data-role="1">单位管理登录</a>
+                        </li>
+                        <li class="nav-item col-md-4 col-sm-4 col-xs-4" role="presentation">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#" data-role="0">申请用户登录</a>
+                        </li>
+                        <li class="nav-item col-md-4 col-sm-4 col-xs-4" role="presentation">
+                            <a class="nav-link" data-bs-toggle="tab" href="#" data-role="2">专家登录</a>
+                        </li>
+                    </ul>
+                    <div class="card col-xs-12 mx-auto">
+                        <div class="card-body">
+                            <form id="loginForm">
+                                <div class="mx-xs-2 mx-sm-3 mx-md-5 my-4 border-bottom">
+                                    <div class="input-group">
+                                        <label class="my-auto me-3" for="txtLoginID">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 fill="currentColor" class="bi bi-person-circle"
+                                                 viewBox="0 0 16 16">
+                                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+                                                <path fill-rule="evenodd"
+                                                      d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
+                                            </svg>
+                                        </label>
+                                        <input type="text" class="form-control border-0" placeholder="身份证号码"
+                                               id="txtLoginID" name="loginid" th:value="${loginId}" autocomplete="off"
+                                               required>
+                                        <a href="register/personal" class="btn btn-link text-decoration-none"
+                                           id="linkRegister">注册账号</a>
+                                    </div>
+                                </div>
+                                <div class="mx-xs-2 mx-sm-3 mx-md-5 my-4 border-bottom">
+                                    <div class="input-group">
+                                        <label class="my-auto me-3" for="txtPassword">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 fill="currentColor" class="bi bi-key-fill"
+                                                 viewBox="0 0 16 16">
+                                                <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2zM2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
+                                            </svg>
+                                        </label>
+                                        <input type="password" class="form-control border-0" placeholder="密码"
+                                               id="txtPassword" name="password" th:value="${password}"
+                                               autocomplete="off" required>
+                                        <a href="/account/findPassword"
+                                           class="btn btn-link text-decoration-none" id="findPassword">忘记密码</a>
+                                    </div>
+                                </div>
+                                <div class="mx-xs-2 mx-sm-3 mx-md-5 my-4 border-bottom">
+                                    <div class="input-group">
+                                        <label class="my-auto me-3" for="txtCaptcha">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                 fill="currentColor" class="bi bi-shield-check" viewBox="0 0 16 16">
+                                                <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z"/>
+                                                <path d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                                            </svg>
+                                        </label>
+                                        <input type="text" class="form-control border-0" placeholder="验证码"
+                                               id="txtCaptcha" name="captcha" autocomplete="off" required>
+                                        <div class="ps-1">
+                                            <img onclick="javascript:refreshCaptcha();"
+                                                 th:src="@{/public/getCaptcha?t=1}"
+                                                 id="imgCaptcha"
+                                                 style="width:100px;height:40px;border:solid 1px #888;border-left-width: 2px;"/>
+                                        </div>
+                                        <a href="javascript:refreshCaptcha();">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                                 fill="currentColor" class="bi bi-arrow-clockwise" viewBox="0 0 16 16">
+                                                <path fill-rule="evenodd"
+                                                      d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                            </svg>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="px-5 row g-2">
+                                    <div class="col-12">
+                                        <button type="button" class="w-100 btn btn-lg btn-primary" id="btnLogin"
+                                                onclick="doLogin()">登 录
+                                        </button>
+                                    </div>
+                                    <div class="col-12" id="YWTB">
+                                        <button type="button" class="w-100 btn btn-lg btn-warning"
+                                                id="btnLoginZWDT">一网通办登录
+                                        </button>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="button" class="w-100 btn btn-lg btn-warning"
+                                                id="btnLoginZJBySJ" hidden>专家手机登录
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-footer">
+                            <div class="tab-content">
+                                <div style="color:red" class="text-start">
+                                    温馨提示：由于系统更新，旧账户密码已不可使用，个人及单位账户请使用“忘记密码”功能，进行密码重置，其余用户请联系中心管理员。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<footer class="footer mt-auto py-3 bg-sdrc-blue" th:include="~{_layout::page_footer}"></footer>
+</body>
+</html>

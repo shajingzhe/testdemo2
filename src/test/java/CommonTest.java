@@ -4,7 +4,9 @@ import com.google.common.collect.Lists;
 import com.zero.exception.InfoException;
 import com.zero.utils.StrUtils;
 import com.zero.utils.FileUtils;
+import entity.Person;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -23,12 +26,33 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CommonTest {
 
 	private volatile static int i = 1;
 
 	public static void main(String[] args) throws IOException {
+		List<Person> personList = new ArrayList<Person>();
+		personList.add(new Person("张三", 8, 3000));
+		personList.add(new Person("李四", 18, 5000));
+		personList.add(new Person("王五", 28, 7000));
+		personList.add(new Person("孙六", 38, 9000));
+		DoubleSummaryStatistics collect = personList.stream().collect(Collectors.summarizingDouble(Person::getSalary));
+		System.out.println("一次性统计所有信息:"+collect);
+	}
+
+	private static void m17() {
+		String a="1";
+		assert1();
+		System.out.println("已运行！！");
+	}
+
+	public static void assert1(){
+		Assert.isTrue(1!=1, "操作正在执行，请稍后再试！");
+	}
+
+	private static void m16() {
 		for (int i = 1; i <= 1000000; i++) {
 			System.out.print("789\r当前数值：" +i);
 		}

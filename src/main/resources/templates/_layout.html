@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="html_head(title,links,scripts)">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title th:replace="${title}">上海市人民政府决策咨询研究项目管理平台</title>
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/bootstrap/bootstrap-icons.css}" rel="stylesheet">
+    <link th:href="@{/components/layer/theme/default/layer.css}" rel="stylesheet">
+    <link th:href="@{/components/jquery-ui/jquery-ui.min.css}" rel="stylesheet">
+    <link th:href="@{/components/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.min.css}" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <style type="text/css">
+        .bg-sdrc-blue {
+            background-color: #1C52A0
+        }
+
+        body {
+            font-size: 0.95em
+        }
+
+        form.invalid-tooltip-custom .invalid-tooltip {
+            top: 0;
+        }
+    </style>
+
+    <th:block th:replace="${links}"/>
+
+    <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/js/jquery.min.js}"></script>
+    <script th:src="@{/js/global.js}"></script>
+    <script th:src="@{/js/jquery.validate.js}"></script>
+    <script th:src="@{/js/jquery.validate.messages_cn.js}"></script>
+    <script th:src="@{/components/layer/layer.js}"></script>
+    <script th:src="@{/components/moment/moment-with-locales.min.js}"></script>
+    <script th:src="@{/js/components.js}"></script>
+    <script th:src="@{/js/xss.js}"></script>
+    <!-- Select2 -->
+    <link rel="stylesheet" th:href="@{/components/select2/css/select2.css}">
+    <script th:src="@{/components/select2/js/select2.js}"></script>
+    <script th:src="@{/components/jquery-ui/jquery-ui.js}"></script>
+    <script th:src="@{/components/jquery-ui/jquery-ui_zh-CN.js}"></script>
+    <script th:src="@{/components/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js}"></script>
+    <script th:src="@{/components/jquery-ui-timepicker-addon/i18n/jquery-ui-timepicker-zh-CN.js}"></script>
+    <!-- select2-bootstrap-5-theme -->
+    <link rel="stylesheet" th:href="@{/components/select2/css/select2-bootstrap-5-theme.css}">
+
+    <th:block th:replace="${scripts}"/>
+</head>
+<body>
+<header th:fragment="page_header">
+    <a href="javascript:;" class="d-flex align-items-center mb-3 mb-md-0 text-light text-decoration-none">
+        <img src="../static/img/logo.png" th:src="@{/img/logo.png}" width="80" height="80"/>
+        <span class="fs-1 fw-bold">上海市人民政府决策咨询研究项目管理平台</span>
+    </a>
+</header>
+<footer th:fragment="page_footer">
+    <div class="container-lg text-white text-center">
+        <p class="fw-bold">上海市人民政府发展研究中心 版权所有</p>
+        <p> 本系统建议使用 <a class="text-white" href="http://www.google.com/chrome" target="_blank"><i
+                class="fa fa-chrome"></i> Google Chrome</a> 浏览器访问</p>
+        <p class="fs-6">
+            <a href="//bszs.conac.cn/sitename?method=show&amp;id=08A9E2D3CF107522E053022819AC7E5D" target="_balnk">
+                <img id="imgConac" width="30" border="0" src="../static/img/dzjg_red.png"
+                     th:src="@{/img/dzjg_red.png}" data-bd-imgshare-binded="1"></a>
+            <img src="../static/img/ICP.png" th:src="@{/img/icp.png}" alt="沪ICP备 2021016245号-2" height="20">
+            <span style="line-height: 20px; padding-right: 10px;">沪ICP备 2021016245号-2</span> <img
+                src="../static/img/icon_babh.png" th:src="@{/img/icon_babh.png}" alt="沪公网安备 2021016245号-2"
+                style="height: 20px;">
+            <a target="_balnk" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010102004523"
+               style="text-decoration: none; height: 20px; line-height: 20px; display: inline; color: #FFFFFF"><span
+                    style="line-height: 20px; padding-right: 10px;">沪公网安备 31010102004523号</span></a> <span
+                style="line-height: 20px; padding-right: 10px;">政府网站标识码：3100000100</span></p>
+    </div>
+</footer>
+
+</body>
+</html>
