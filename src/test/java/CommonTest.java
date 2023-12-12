@@ -1,11 +1,31 @@
+import cn.hutool.core.collection.ConcurrentHashSet;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Pair;
+import cn.hutool.core.lang.UUID;
+import cn.hutool.core.util.IdcardUtil;
 import cn.hutool.core.util.StrUtil;
-import com.google.common.collect.Lists;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zero.entity.Entity;
+import com.zero.entity.EntityInfo;
 import com.zero.exception.InfoException;
+import com.zero.utils.SerializableRunnable;
 import com.zero.utils.StrUtils;
 import com.zero.utils.FileUtils;
+import com.zero.utils.thread.ThreadPoolExecutorFactory;
+import com.zero.utils.thread.ThreadUtils;
 import entity.Person;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.util.RamUsageEstimator;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
@@ -17,44 +37,309 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import static java.lang.Thread.sleep;
+
+@Slf4j
 public class CommonTest {
 
-	private volatile static int i = 1;
 
-	public static void main(String[] args) throws IOException {
+	private volatile static int i = 1;
+	private static Object resource = new Object();
+	static boolean run = true;
+
+	public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
+		for (int i1 = 0; i1 < 10; i1++) {
+			System.out.println(StrUtils.generateUUID());
+		}
+
+	}
+
+	//内存大小测试
+	private static void m36() {
+		HashMap<String,String> hashMap=new HashMap<>();
+		for (int j = 0; j < 24000000; j++) {
+			hashMap.put(String.valueOf(UUID.randomUUID()),"value"+j);
+		}
+		System.out.println("map size 100, value is " + RamUsageEstimator.humanSizeOf(hashMap));
+	}
+
+	//遍历移除
+	private static void m35() {
+		List<String> dataList = new ArrayList<>();
+		dataList.add("Value1");
+		dataList.add("Value2");
+		dataList.add("Value3");
+
+		// 使用迭代器循环遍历列表
+		Iterator<String> iterator = dataList.iterator();
+		while (iterator.hasNext()) {
+			String value = iterator.next();
+			iterator.remove();// 移除当前元素
+			System.out.println(value);
+		}
+		log.info("1");
+	}
+
+	private static void m34() {
+		Map<String, String> map = new HashMap<>();
+		System.out.println("map init value is " + RamUsageEstimator.sizeOf(map));
+		for (int i = 0; i < 100; i++) {
+			RandomStringUtils.randomAlphanumeric(100);
+			map.put(RandomStringUtils.randomAlphanumeric(10), RandomStringUtils.randomAlphanumeric(10));
+		}
+		String primaryMediator = map.get(null);
+		log.info(primaryMediator);
+	}
+
+	private static void n33() {
+		Map<String, String> map = new HashMap<>();
+		System.out.println("map init value is " + RamUsageEstimator.sizeOf(map));
+		for (int i = 0; i < 100; i++) {
+			RandomStringUtils.randomAlphanumeric(100);
+			map.put(RandomStringUtils.randomAlphanumeric(10), RandomStringUtils.randomAlphanumeric(10));
+		}
+		System.out.println("map size 100, value is " + RamUsageEstimator.sizeOf(map));
+		System.out.println("map size 100, value is " + RamUsageEstimator.humanSizeOf(map));
+	}
+
+	private static void m32() throws JsonProcessingException {
+		// 假设你的 JSON 字符串是一个 PageImpl 对象
+		String jsonString = "{\"content\":[{\"name\":\"John\",\"age\":30}],\"number\":1,\"size\":10,\"totalElements\":1,\"totalPages\":1}";
+
+		// 使用 ObjectMapper 进行反序列化
+		ObjectMapper objectMapper = new ObjectMapper();
+		Page<Person> pageFromJson = objectMapper.readValue(jsonString, new TypeReference<PageImpl<Person>>() {
+		});
+
+		// 输出反序列化后的内容
+		System.out.println("Number: " + pageFromJson.getNumber());
+		System.out.println("Size: " + pageFromJson.getSize());
+		System.out.println("Total Elements: " + pageFromJson.getTotalElements());
+		System.out.println("Total Pages: " + pageFromJson.getTotalPages());
+		System.out.println("Content: " + pageFromJson.getContent());
+	}
+
+	private static void m31() {
+		HashMap<String, String> map = new HashMap<>();
+		map.put(null, "123");
+		System.out.println("执行成功");
+		String s = map.get(null);
+
+		System.out.println(s);
+	}
+
+	private static void m30() throws IOException, ClassNotFoundException {
+		SerializableRunnable runnable = () -> log.info("运行成功!");
+
+		String storyStr = ThreadUtils.transformObj2Str(runnable);
+		SerializableRunnable runnable1 = ThreadUtils.transformStr2Obj(storyStr);
+
+		ThreadPoolExecutorFactory.executeCommon(runnable1);
+	}
+
+
+	//身份证
+	private static void m29() {
+		boolean validCard = IdcardUtil.isValidCard("320582199812157917");
+		Date date = null;
+		String format = DateUtil.format(date, "yyyy-MM-dd");
+		System.out.println(format);
+	}
+
+	private static void m28() {
+		ConcurrentHashMap<String, String> errorInfoHashMap = new ConcurrentHashMap<>();
+		for (int i = 0; i < 10; i++) {
+			errorInfoHashMap.put(String.valueOf(i), String.valueOf(i));
+		}
+		log.info(errorInfoHashMap.keySet().toString());
+	}
+
+	//通货膨胀
+	private static void m27() {
+		double a = 1;
+		for (int i = 0; i < 5; i++) {
+			a = a * 1.08;
+		}
+		System.out.println(a);
+	}
+
+	private static void m26() {
+		LinkedList<String> oldList = new LinkedList<>();
+		oldList.add("1");
+		oldList.add("2");
+		oldList.add("3");
+		oldList.add("4");
+		oldList.add("sd");
+		LinkedList<String> newList = new LinkedList<>(oldList);
+		LinkedList<String> aList = null;
+		LinkedList<String> bList = null;
+
+		if ((aList == null || bList == null) && aList != bList) {
+			boolean w = true;
+		}
+		boolean a = CollectionUtils.containsAll(oldList, newList);
+		System.out.println(a);
+	}
+
+	private static void m25() {
+		for (int i = 1; i <= 10; i++) {
+			String uuid = StrUtil.uuid();
+			uuid = uuid.replaceAll("-", "");
+			System.out.println(uuid);
+		}
+		String a = "a813d30a2d7746c18a314ead9a2e1ecf";
+		String b = "86edc619e30e41639d97f638fa2cf894";
+		System.out.println(a.length());
+		System.out.println(b.length());
+	}
+
+	private static void m24() {
+		log.info("开始");
+		HashMap<String, Object> hashMap = new HashMap<>();
+		for (int i = 1; i <= 2000000; i++) {
+			hashMap.put("key" + i, "value" + i);
+		}
+		log.info("结束");
+		// 代码运行开始时间
+		Long startTime = System.currentTimeMillis();
+		String a = (String) hashMap.get("41653");
+		// 代码运行结束时间
+		Long endTime = System.currentTimeMillis();
+		// 打印说明
+		log.info("程序执行时长{}ms", endTime - startTime);
+	}
+
+	private static void m23() throws InterruptedException {
+		Thread t = new Thread(() -> {
+			while (true) {
+				if (!run) {
+					System.out.println("停止");
+					break;
+				}
+				System.out.println("运行中");
+			}
+		});
+		t.start();
+
+		sleep(1);
+		Thread t1 = new Thread(() -> {
+			System.out.println("准备停止");
+			run = false; // 线程t不会如预想的停下来
+		});
+		t1.start();
+	}
+
+	private static void m22() throws InterruptedException {
+		Object r1 = resource;
+		HashMap<Integer, Integer> list = new HashMap<>();
+
+		AtomicInteger taskNum = new AtomicInteger();
+		Thread thread1 = new Thread(() -> {
+			for (int i = 1; i <= 100000; i++) {
+				synchronized ("123") {
+					list.put(i * 2, i * 2);
+				}
+			}
+			taskNum.getAndIncrement();
+		});
+		Thread thread2 = new Thread(() -> {
+			for (int i = 1; i <= 100000; i++) {
+				synchronized ("123") {
+					list.put(i * 2 + 1, i * 2 + 1);
+				}
+			}
+			taskNum.getAndIncrement();
+		});
+		thread1.start();
+		thread2.start();
+		while (1 == 1) {
+			sleep(1);
+			if (taskNum.get() == 2) {
+				System.out.println(list.size());
+				break;
+			}
+
+		}
+	}
+
+	private static void m21() {
+		ConcurrentHashMap<Integer, Integer> hashMap = new ConcurrentHashMap<>();
+		for (int i = 1; i <= 12; i++) {
+			hashMap.put(i, i);
+		}
+		System.out.println("数量：" + hashMap.mappingCount());
+	}
+
+	private static void m20() {
+		ConcurrentLinkedQueue<String> actionQueue = new ConcurrentLinkedQueue<String>();
+		for (int i = 1; i <= 12; i++) {
+			actionQueue.add(String.valueOf(i));
+		}
+		for (int i = 1; i <= 12; i++) {
+			String poll = actionQueue.peek();
+			System.out.println(poll);
+		}
+		System.out.println("数据1：" + actionQueue);
+	}
+
+	private static void m19() {
+		EntityInfo top = new EntityInfo();
+		List<EntityInfo> child = new ArrayList<>();
+		put(child, top);
+		System.out.println(top);
+		//System.out.println("map size 100, value is " + RamUsageEstimator.humanSizeOf(top));
+	}
+
+	private static void put(List<EntityInfo> child, EntityInfo top) {
+		//for (int i = 1; i < 3000000; i++) {
+		EntityInfo e = new EntityInfo();
+		top = e;
+		e.setEntityId(UUID.randomUUID().toString());
+		e.setParentEntityInfo(top);
+		e.setEntityTypeId("45454556");
+		ConcurrentHashSet<String> objects = new ConcurrentHashSet<>();
+		objects.add(top.getEntityId());
+		e.setParentEntityIdSet(objects);
+		e.setChildEntityInfoList(child);
+		System.out.println("map size 100, value is " + RamUsageEstimator.humanSizeOf(e));
+		//}
+	}
+
+	private static void m18() {
 		List<Person> personList = new ArrayList<Person>();
 		personList.add(new Person("张三", 8, 3000));
 		personList.add(new Person("李四", 18, 5000));
 		personList.add(new Person("王五", 28, 7000));
 		personList.add(new Person("孙六", 38, 9000));
 		DoubleSummaryStatistics collect = personList.stream().collect(Collectors.summarizingDouble(Person::getSalary));
-		System.out.println("一次性统计所有信息:"+collect);
+		System.out.println("一次性统计所有信息:" + collect);
 	}
 
 	private static void m17() {
-		String a="1";
+		String a = "1";
 		assert1();
 		System.out.println("已运行！！");
 	}
 
-	public static void assert1(){
-		Assert.isTrue(1!=1, "操作正在执行，请稍后再试！");
+	public static void assert1() {
+		Assert.isTrue(1 != 1, "操作正在执行，请稍后再试！");
 	}
 
 	private static void m16() {
 		for (int i = 1; i <= 1000000; i++) {
-			System.out.print("789\r当前数值：" +i);
+			System.out.print("789\r当前数值：" + i);
 		}
 	}
 

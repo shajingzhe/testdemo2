@@ -7,11 +7,13 @@ import lombok.Data;
  * @date 2023/4/24 上午9:30
  */
 @Data
-public class Entity {
+public class Entity{
 
 	private String name;
 
 	private String displayName;
 
 	private String type;
+
+	public Entity(){}
 }

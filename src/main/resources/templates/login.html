@@ -186,25 +186,15 @@
         }
 
         function demo() {
-            var applicantGender = page.getWidget('applicantGender');
-            var applicantIdNumber = page.getWidget('applicantIdNumber');
-            var applicantIDType = page.getWidget('applicantIDType');
-            var applicantName = page.getWidget('applicantName');
-            if (fieldValue == '1' || fieldValue == '4' || fieldValue == '6' || fieldValue == null) {
-                applicantGender.hidden = false;
-                applicantIdNumber.hidden = false;
-                applicantIDType.hidden = false;
-                applicantName.hidden = false;
+            var professionType = page.getWidget('professionType');
+            if (fieldValue == '06') {
+                professionType.hidden = false;
+                professionType.required=true;
             } else {
-                applicantGender.hidden = true;
-                applicantIdNumber.hidden = true;
-                applicantIDType.hidden = true;
-                applicantName.hidden = true;
+                professionType.hidden = true;
+                professionType.required=false;
             }
-            page.refresh('applicantGender');
-            page.refresh('applicantIdNumber');
-            page.refresh('applicantIDType');
-            page.refresh('applicantName');
+            page.refresh('professionType');
         }
 
     </script>

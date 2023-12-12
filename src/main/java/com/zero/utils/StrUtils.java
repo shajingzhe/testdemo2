@@ -8,6 +8,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 public class StrUtils {
@@ -33,6 +34,10 @@ public class StrUtils {
                             str, subStr));
         }
         return StringUtils.countOccurrencesOf(str, subStr);
+    }
+
+    public static String generateUUID() {
+        return UUID.randomUUID().toString().replace("-", "");
     }
 
     public static String nonEmptyStr(String value){
