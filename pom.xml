@@ -163,6 +163,12 @@
             <version>2.6.3</version> <!-- 替换为你希望使用的版本 -->
         </dependency>
 
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.7</version>
+        </dependency>
+
     </dependencies>
 
     <properties>

@@ -4,6 +4,8 @@ import cn.hutool.core.lang.Pair;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.IdcardUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -29,6 +31,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -37,7 +40,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.DoubleSummaryStatistics;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -57,22 +62,109 @@ public class CommonTest {
 
 	private volatile static int i = 1;
 	private static Object resource = new Object();
-	static boolean run = true;
+	static boolean run = false;
+	static List<String> cache=new ArrayList<>();
+	static int a=0;
+	static AtomicInteger atomicInteger=new AtomicInteger(0);
 
 	public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
-		for (int i1 = 0; i1 < 10; i1++) {
-			System.out.println(StrUtils.generateUUID());
-		}
-
+		m36(100000);
 	}
 
 	//内存大小测试
-	private static void m36() {
-		HashMap<String,String> hashMap=new HashMap<>();
-		for (int j = 0; j < 24000000; j++) {
-			hashMap.put(String.valueOf(UUID.randomUUID()),"value"+j);
+	private static void m36(int size) {
+		HashSet<String> Set=new HashSet<>();
+		for (int j = 0; j < size; j++) {
+			Set.add(String.valueOf(StrUtils.generateUUID()));
 		}
-		System.out.println("map size 100, value is " + RamUsageEstimator.humanSizeOf(hashMap));
+		System.out.println("map size 100, value is " + RamUsageEstimator.humanSizeOf(Set));
+	}
+
+	private static void m40() throws InterruptedException {
+		Thread thread = new Thread(() -> {
+			for (int i = 0; i < 100000; i++) {
+				add();
+			}
+			atomicInteger.addAndGet(1);
+		});
+		Thread thread1 = new Thread(() -> {
+			for (int i = 0; i < 100000; i++) {
+				add();
+			}
+			atomicInteger.addAndGet(1);
+		});
+		thread.start();
+		thread1.start();
+		while (atomicInteger.get()<2){
+			sleep(1);
+		}
+		System.out.println(a);
+	}
+
+	private static void add(){
+		synchronized ("1234123".intern()){
+			a++;
+		}
+	}
+
+	//list 对比
+	private static void m39() {
+		List<String> oldList = new ArrayList<>();
+		oldList.add("A");
+		oldList.add("B");
+		oldList.add("C");
+
+		List<String> newList = new ArrayList<>();
+		newList.add("B");
+		newList.add("C");
+		newList.add("D");
+
+		// 获取新增的内容
+		List<String> addedList = new ArrayList<>(newList);
+		addedList.removeAll(oldList);
+
+		// 获取删除的内容
+		List<String> removedList = new ArrayList<>(oldList);
+		removedList.removeAll(newList);
+
+		System.out.println("新增的内容: " + addedList);
+		System.out.println("删除的内容: " + removedList);
+	}
+
+	//计算保留百分比
+	private static void m38() {
+		int numerator = 2;
+		int denominator = 3;
+
+		// 计算相除结果
+		double result = (double) numerator / denominator;
+
+		// 使用 DecimalFormat 格式化结果
+		DecimalFormat df = new DecimalFormat("#.##%");
+		String formattedPercentage = df.format(result);
+
+		// 输出结果
+		System.out.println("Result as Percentage: " + formattedPercentage);
+	}
+
+	//list json相互转化
+	private static void m37() {
+		String a =null;
+		LinkedList<Student> parsedList = JSON.parseObject(a, LinkedList.class);
+
+		LinkedList<Student> students = new LinkedList<>();
+		for (int i = 0; i < 10; i++) {
+			Student student = new Student();
+			student.setName("名字"+i);
+			student.setAge(String.valueOf(i));
+			students.add(student);
+		}
+		String s = JSONUtil.toJsonStr(students);
+		List<Student> linkedLists = JSONUtil.toList(s, Student.class);
+		System.out.println(JSONUtil.toJsonStr(students));
+
+		Date newDeadline = DateUtil.offsetDay(new Date(), 10);
+		System.out.println(newDeadline);
 	}
 
 	//遍历移除
@@ -221,6 +313,7 @@ public class CommonTest {
 		log.info("程序执行时长{}ms", endTime - startTime);
 	}
 
+	//线程可见性问题
 	private static void m23() throws InterruptedException {
 		Thread t = new Thread(() -> {
 			while (true) {
